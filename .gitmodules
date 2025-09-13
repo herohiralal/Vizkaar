@@ -1,9 +1,12 @@
 [submodule "Source/Dependencies/Panshilar"]
 	path = Source/Dependencies/Panshilar
 	url = git@github.com:herohiralal/Panshilar.git
+	branch = main
 [submodule "Source/Dependencies/Dvaarpaal"]
 	path = Source/Dependencies/Dvaarpaal
 	url = git@github.com:herohiralal/Dvaarpaal.git
+	branch = main
 [submodule "Source/Dependencies/Muzent"]
 	path = Source/Dependencies/Muzent
 	url = git@github.com:herohiralal/Muzent.git
+	branch = main
