@@ -1,10 +1,10 @@
 // raddbg 0.9.21 project file
 
-recent_file: path: "Source/Dependencies/Panshilar/Tools/TestRunner/zzzz_TestRunner.c"
 target:
 {
   executable: "Source/Dependencies/Panshilar/Binaries/TestRunner-windows-x64.exe"
   working_directory: "Source/Dependencies/Panshilar"
+  enabled: 0
 }
 target:
 {

@@ -21,7 +21,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
     });
 
-    Sleep(3000); // 3 seconds
+    Sleep(1000);
+
+    DVRPL_SetFullScreen(&wnd, true, nil, nil, nil, nil);
+
+    Sleep(1000);
+
+    DVRPL_SetFullScreen(&wnd, false, nil, nil, nil, nil);
+
+    Sleep(1000);
 
     DVRPL_DestroyWindow(&wnd);
 
