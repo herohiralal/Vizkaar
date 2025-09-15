@@ -1,20 +1,22 @@
+#define PNSLR_IMPLEMENTATION
+#define DVRPL_IMPLEMENTATION
+
 #include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Compiler.h"
+#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Platforms.h"
 #include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Warnings.h"
 PNSLR_SUPPRESS_WARN
     #define WIN32_LEAN_AND_MEAN
     #include <Windows.h>
     #undef WIN32_LEAN_AND_MEAN
-    #include "Dependencies/Panshilar/Bindings/C/Panshilar.h"
-    #include "Dependencies/Dvaarpaal/Source/Dvaarpaal.h"
 PNSLR_UNSUPPRESS_WARN
-#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Primitives.h"
-#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Macros.h"
+#include "Dependencies/Panshilar/Source/Panshilar.h"
+#include "Dependencies/Dvaarpaal/Source/Dvaarpaal.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
         .posX = 10, .posY = 10,
-        .title = "Test Window",
+        .title = PNSLR_STRING_LITERAL("Test Window"),
         .sizeX = 800, .sizeY = 600,
         .parent = {0},
         .msaa = false,
@@ -35,3 +37,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     return 0;
 }
+
+// unity build
+#include "Dependencies/Dvaarpaal/Source/zzzz_Unity.c"
+#include "Dependencies/Panshilar/Source/zzzz_Unity.c"

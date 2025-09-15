@@ -3,8 +3,6 @@ from Source.Dependencies.Panshilar import buildutils
 
 FOLDER_STRUCTURE = buildutils.getFolderStructure(os.path.dirname(os.path.abspath(__file__)))
 MAIN_FILE = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.c'
-DVRPL_FILE = FOLDER_STRUCTURE.srcDir + 'Dvaarpaal.c'
-PNSLR_FILE = FOLDER_STRUCTURE.srcDir + 'Panshilar.c'
 
 if __name__ == '__main__':
     buildutils.setupVsCodeLspStuff()
@@ -16,7 +14,7 @@ if __name__ == '__main__':
         buildCmd = buildutils.getExecBuildCommand(
             plt,
             True,
-            [MAIN_FILE, PNSLR_FILE, DVRPL_FILE],
+            [MAIN_FILE],
             ['iphlpapi.lib', 'Ws2_32.lib', 'Shell32.lib', 'Gdi32.lib', 'User32.lib'] if plt.tgt == 'windows' else ['pthread'] if plt.tgt == 'linux' else [],
             FOLDER_STRUCTURE.binDir + buildutils.getExecOutputFileName('Vizkaar', plt),
             False
