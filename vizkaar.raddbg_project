@@ -4,6 +4,11 @@ recent_file: path: "Source/Dependencies/Panshilar/Tools/TestRunner/zzzz_TestRunn
 target:
 {
   executable: "Source/Dependencies/Panshilar/Binaries/TestRunner-windows-x64.exe"
-  working_directory: "Source/Dependencies/Panshilar/"
+  working_directory: "Source/Dependencies/Panshilar"
+}
+target:
+{
+  executable: "Binaries/Vizkaar-windows-x64.exe"
+  working_directory: ""
   enabled: 1
 }
