@@ -15,7 +15,7 @@ if __name__ == '__main__':
             plt,
             True,
             [MAIN_FILE],
-            ['iphlpapi.lib', 'Ws2_32.lib', 'Shell32.lib', 'Gdi32.lib', 'User32.lib'] if plt.tgt == 'windows' else ['pthread'] if plt.tgt == 'linux' else [],
+            [],
             FOLDER_STRUCTURE.binDir + buildutils.getExecOutputFileName('Vizkaar', plt),
             False
         )

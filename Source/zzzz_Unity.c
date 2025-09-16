@@ -4,19 +4,14 @@
 #include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Compiler.h"
 #include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Platforms.h"
 #include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Warnings.h"
-PNSLR_SUPPRESS_WARN
-    #define WIN32_LEAN_AND_MEAN
-    #include <Windows.h>
-    #undef WIN32_LEAN_AND_MEAN
-PNSLR_UNSUPPRESS_WARN
 #include "Dependencies/Panshilar/Source/Panshilar.h"
 #include "Dependencies/Dvaarpaal/Source/Dvaarpaal.h"
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
+i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
 {
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
         .posX = 10, .posY = 10,
-        .title = PNSLR_STRING_LITERAL("Test Window"),
+        .title = PNSLR_StringLiteral("Test Window"),
         .sizeX = 800, .sizeY = 600,
         .parent = {0},
         .msaa = false,
