@@ -1,11 +1,7 @@
 #define PNSLR_IMPLEMENTATION
 #define DVRPL_IMPLEMENTATION
-
-#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Compiler.h"
-#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Platforms.h"
-#include "Dependencies/Panshilar/Source/Dependencies/PNSLR_Intrinsics/Warnings.h"
-#include "Dependencies/Panshilar/Source/Panshilar.h"
-#include "Dependencies/Dvaarpaal/Source/Dvaarpaal.h"
+#define VZKR_IMPLEMENTATION
+#include "__Prelude.h"
 
 i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
 {
