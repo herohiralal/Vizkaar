@@ -1,7 +1,7 @@
 #define PNSLR_IMPLEMENTATION
 #define DVRPL_IMPLEMENTATION
 #define VZKR_IMPLEMENTATION
-#include "__Prelude.h"
+#include "Vizkaar.h"
 
 i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
 {
@@ -21,6 +21,7 @@ i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
         .sizeX = 800, .sizeY = 600,
         .parent = {0},
         .msaa = false,
+        .acceptDropFiles = true,
         .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
     });
 
@@ -54,6 +55,14 @@ i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
             {
                 fullscreen = !fullscreen;
                 DVRPL_SetFullScreen(&wnd, fullscreen, nil, nil, nil, nil);
+            }
+
+            if (evt.ty == DVRPL_EvtTy_DropFile)
+            {
+                utf8str file = DVRPL_GetDroppedFile(evt.droppedFileId);
+                cstring cool = PNSLR_CStringFromString(file, tempAllocator);
+                OutputDebugStringA(cool);
+                OutputDebugStringA("\n");
             }
         }
 
