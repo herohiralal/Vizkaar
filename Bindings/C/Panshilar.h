@@ -116,7 +116,7 @@ b8 PNSLR_TryLockMutex(
     PNSLR_Mutex* mutex
 );
 
-// Read-Write ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read-Write Mutex ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * A read-write mutex.
@@ -241,7 +241,7 @@ void PNSLR_SignalSemaphore(
     i32 count
 );
 
-// Condition ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Condition Variable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * A condition variable for signaling between threads.
@@ -337,7 +337,7 @@ void PNSLR_MemMove(
 // Allocators
 // #######################################################################################
 
-// Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Allocator Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Defines the mode to be used when calling the allocator function.
@@ -405,7 +405,7 @@ typedef struct PNSLR_Allocator
 
 PNSLR_DECLARE_ARRAY_SLICE(PNSLR_Allocator);
 
-// Allocation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Allocation ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Allocate memory using the provided allocator.
@@ -475,7 +475,7 @@ u64 PNSLR_QueryAllocatorCapabilities(
     PNSLR_AllocatorError* error
 );
 
-// Nil ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nil allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Get the 'nil' allocator. Reports 'out of memory' when requesting memory.
@@ -483,7 +483,7 @@ u64 PNSLR_QueryAllocatorCapabilities(
  */
 PNSLR_Allocator PNSLR_GetAllocator_Nil(void);
 
-// Default ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Default Heap Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Get the default heap allocator.
@@ -504,7 +504,7 @@ rawptr PNSLR_AllocatorFn_DefaultHeap(
     PNSLR_AllocatorError* error
 );
 
-// Arena ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Arena Alloator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * A block of memory used by the arena allocator.
@@ -619,7 +619,7 @@ PNSLR_ArenaSnapshotError PNSLR_DiscardArenaAllocatorSnapshot(
     PNSLR_ArenaAllocatorSnapshot* snapshot
 );
 
-// Stack ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Stack Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * A page of a stack allocator.
@@ -691,7 +691,7 @@ rawptr PNSLR_AllocatorFn_Stack(
     PNSLR_AllocatorError* error
 );
 
-// Collections ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Collections make/free functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Allocate a raw array slice of 'count' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
@@ -964,7 +964,7 @@ b8 PNSLR_CStringEndsWithCString(
     PNSLR_StringComparisonType comparisonType
 );
 
-// Advanced ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Advanced comparisons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Searches for the first occurrence of a substring within a string.
@@ -998,7 +998,7 @@ utf8str PNSLR_ReplaceInString(
     PNSLR_StringComparisonType comparisonType
 );
 
-// UTF-8 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UTF-8 functionalities ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Result structure for UTF-8 rune encoding.
@@ -1043,7 +1043,7 @@ PNSLR_DecodedRune PNSLR_DecodeRune(
     PNSLR_ArraySlice(u8) s
 );
 
-// Windows-specific ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Windows-specific bs for UTF-16 conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
  * Converts a UTF-8 string to a UTF-16 string.
@@ -1063,6 +1063,559 @@ PNSLR_ArraySlice(u16) PNSLR_UTF16FromUTF8WindowsOnly(
 utf8str PNSLR_UTF8FromUTF16WindowsOnly(
     PNSLR_ArraySlice(u16) utf16str,
     PNSLR_Allocator allocator
+);
+
+// String Builder ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * A basic string builder. Can accept strings and characters,
+ * and build a single string from them.
+ *
+ * Create by setting the allocator and zeroing the rest of the fields.
+ */
+typedef struct PNSLR_StringBuilder
+{
+    PNSLR_Allocator allocator;
+    PNSLR_ArraySlice(u8) buffer;
+    i64 writtenSize;
+    i64 cursorPos;
+} PNSLR_StringBuilder;
+
+/**
+ * Append a single byte to the string builder. Could be an ANSI/ASCII character,
+ * or not. The function does not check for validity.
+ */
+b8 PNSLR_AppendByteToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u8 byte
+);
+
+/**
+ * Append a UTF-8 string to the string builder.
+ */
+b8 PNSLR_AppendStringToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    utf8str str
+);
+
+/**
+ * Append a C-style null-terminated string to the string builder.
+ */
+b8 PNSLR_AppendCStringToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    cstring str
+);
+
+/**
+ * Append a single character (rune) to the string builder.
+ */
+b8 PNSLR_AppendRuneToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u32 rune
+);
+
+/**
+ * Append an 8-bit boolean value to the string builder.
+ */
+b8 PNSLR_AppendB8ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    b8 value
+);
+
+/**
+ * Append a 32-bit floating-point number to the string builder.
+ */
+b8 PNSLR_AppendF32ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    f32 value,
+    i32 decimalPlaces
+);
+
+/**
+ * Append a 64-bit floating point number to the string builder.
+ */
+b8 PNSLR_AppendF64ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    f64 value,
+    i32 decimalPlaces
+);
+
+/**
+ * The base to use when appending integer numbers to the string builder.
+ */
+typedef u8 PNSLR_IntegerBase /* use as value */;
+#define PNSLR_IntegerBase_Decimal ((PNSLR_IntegerBase) 0)
+#define PNSLR_IntegerBase_Binary ((PNSLR_IntegerBase) 1)
+#define PNSLR_IntegerBase_HexaDecimal ((PNSLR_IntegerBase) 2)
+#define PNSLR_IntegerBase_Octal ((PNSLR_IntegerBase) 3)
+
+/**
+ * Append an unsigned 8-bit integer to the string builder.
+ */
+b8 PNSLR_AppendU8ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u8 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append an unsigned 16-bit integer to the string builder.
+ */
+b8 PNSLR_AppendU16ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u16 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append an unsigned 32-bit integer number to the string builder.
+ */
+b8 PNSLR_AppendU32ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u32 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append an unsigned 64-bit integer to the string builder.
+ */
+b8 PNSLR_AppendU64ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    u64 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append a signed 8-bit integer to the string builder.
+ */
+b8 PNSLR_AppendI8ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    i8 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append a signed 16-bit integer to the string builder.
+ */
+b8 PNSLR_AppendI16ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    i16 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append a signed 32-bit integer number to the string builder.
+ */
+b8 PNSLR_AppendI32ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    i32 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Append a signed 64-bit integer to the string builder.
+ */
+b8 PNSLR_AppendI64ToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    i64 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Return the string from the string builder.
+ */
+utf8str PNSLR_StringFromStringBuilder(
+    PNSLR_StringBuilder* builder
+);
+
+/**
+ * Reset the string builder, clearing its contents but keeping the allocated buffer.
+ */
+void PNSLR_ResetStringBuilder(
+    PNSLR_StringBuilder* builder
+);
+
+/**
+ * Free the resources used by the string builder.
+ */
+void PNSLR_FreeStringBuilder(
+    PNSLR_StringBuilder* builder
+);
+
+// String Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * The possible primitive types that can be formatted.
+ */
+typedef u8 PNSLR_PrimitiveFmtType /* use as value */;
+#define PNSLR_PrimitiveFmtType_B8 ((PNSLR_PrimitiveFmtType) 0)
+#define PNSLR_PrimitiveFmtType_F32 ((PNSLR_PrimitiveFmtType) 1)
+#define PNSLR_PrimitiveFmtType_F64 ((PNSLR_PrimitiveFmtType) 2)
+#define PNSLR_PrimitiveFmtType_U8 ((PNSLR_PrimitiveFmtType) 3)
+#define PNSLR_PrimitiveFmtType_U16 ((PNSLR_PrimitiveFmtType) 4)
+#define PNSLR_PrimitiveFmtType_U32 ((PNSLR_PrimitiveFmtType) 5)
+#define PNSLR_PrimitiveFmtType_U64 ((PNSLR_PrimitiveFmtType) 6)
+#define PNSLR_PrimitiveFmtType_I8 ((PNSLR_PrimitiveFmtType) 7)
+#define PNSLR_PrimitiveFmtType_I16 ((PNSLR_PrimitiveFmtType) 8)
+#define PNSLR_PrimitiveFmtType_I32 ((PNSLR_PrimitiveFmtType) 9)
+#define PNSLR_PrimitiveFmtType_I64 ((PNSLR_PrimitiveFmtType) 10)
+#define PNSLR_PrimitiveFmtType_Rune ((PNSLR_PrimitiveFmtType) 11)
+#define PNSLR_PrimitiveFmtType_CString ((PNSLR_PrimitiveFmtType) 12)
+#define PNSLR_PrimitiveFmtType_String ((PNSLR_PrimitiveFmtType) 13)
+
+/**
+ * The internal encoding of a type-unspecific format specifier.
+ * For booleans, valueBufferA is 0 or 1.
+ * For floats, valueBufferA is the float value (reinterpret as relevant),
+ *     and valueBufferB is the number of decimal places (cast to i32).
+ * For integers, valueBufferA is the integer value (reinterpret as relevant),
+ *     and the first half of valueBufferB is the base (cast to PNSLR_IntegerBase).
+ * For runes, valueBufferA is the rune value (reinterpret as u32).
+ * For C-style strings, valueBufferA is the pointer to the string.
+ * For UTF-8 strings, valueBufferA is the pointer to the string,
+ *     and valueBufferB is the length (reinterpret as i64).
+ */
+typedef struct PNSLR_PrimitiveFmtOptions
+{
+    PNSLR_PrimitiveFmtType type;
+    u64 valueBufferA;
+    u64 valueBufferB;
+} PNSLR_PrimitiveFmtOptions;
+
+PNSLR_DECLARE_ARRAY_SLICE(PNSLR_PrimitiveFmtOptions);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtB8(
+    b8 value
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtF32(
+    f32 value,
+    i32 decimalPlaces
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtF64(
+    f64 value,
+    i32 decimalPlaces
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtU8(
+    u8 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtU16(
+    u16 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtU32(
+    u32 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtU64(
+    u64 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtI8(
+    i8 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtI16(
+    i16 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtI32(
+    i32 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtI64(
+    i64 value,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtRune(
+    u32 value
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtCString(
+    cstring value
+);
+
+/**
+ * Use when formatting a string. Pass as one of the varargs.
+ */
+PNSLR_PrimitiveFmtOptions PNSLR_FmtString(
+    utf8str value
+);
+
+/**
+ * Format a string with the given format and arguments, appending the result
+ * to the string builder.
+ */
+b8 PNSLR_FormatAndAppendToStringBuilder(
+    PNSLR_StringBuilder* builder,
+    utf8str fmtStr,
+    PNSLR_ArraySlice(PNSLR_PrimitiveFmtOptions) args
+);
+
+// Conversions to strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Convert a boolean value to a string ("true" or "false").
+ */
+utf8str PNSLR_StringFromBoolean(
+    b8 value,
+    PNSLR_Allocator allocator
+);
+
+/**
+ * Convert a 32-bit floating-point number to a string with specified decimal places.
+ */
+utf8str PNSLR_StringFromF32(
+    f32 value,
+    PNSLR_Allocator allocator,
+    i32 decimalPlaces
+);
+
+/**
+ * Convert a 64-bit floating-point number to a string with specified decimal places.
+ */
+utf8str PNSLR_StringFromF64(
+    f64 value,
+    PNSLR_Allocator allocator,
+    i32 decimalPlaces
+);
+
+/**
+ * Convert an unsigned 8-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromU8(
+    u8 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert an unsigned 16-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromU16(
+    u16 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert an unsigned 32-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromU32(
+    u32 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert an unsigned 64-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromU64(
+    u64 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert a signed 8-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromI8(
+    i8 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert a signed 16-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromI16(
+    i16 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert a signed 32-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromI32(
+    i32 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+/**
+ * Convert a signed 64-bit integer to a string in the specified base.
+ */
+utf8str PNSLR_StringFromI64(
+    i64 value,
+    PNSLR_Allocator allocator,
+    PNSLR_IntegerBase base
+);
+
+// Conversions from strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Convert a validstring (case-insensitive "true" or "false", or "1" or "0") to a boolean.
+ */
+b8 PNSLR_BooleanFromString(
+    utf8str str,
+    b8* value
+);
+
+/**
+ * Convert a valid string (numbers-only, with zero or one decimal points,
+ * optional -/+ sign at the start) to a 32-bit floating-point number.
+ */
+b8 PNSLR_F32FromString(
+    utf8str str,
+    f32* value
+);
+
+/**
+ * Convert a valid string (numbers-only, with zero or one decimal points,
+ * optional -/+ sign at the start) to a 64-bit floating-point number.
+ */
+b8 PNSLR_F64FromString(
+    utf8str str,
+    f64* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+ * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 8-bit integer.
+ * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+ * By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_U8FromString(
+    utf8str str,
+    u8* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+ * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 16-bit integer.
+ * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+ * By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_U16FromString(
+    utf8str str,
+    u16* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+ * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 32-bit integer.
+ * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+ * By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_U32FromString(
+    utf8str str,
+    u32* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+ * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 64-bit integer.
+ * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+ * By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_U64FromString(
+    utf8str str,
+    u64* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+ * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+ * a signed 8-bit integer. Will be assumed to be hexadecimal if it contains A-F
+ * characters but no prefix. By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_I8FromString(
+    utf8str str,
+    i8* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+ * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+ * a signed 16-bit integer. Will be assumed to be hexadecimal if it contains A-F
+ * characters but no prefix. By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_I16FromString(
+    utf8str str,
+    i16* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+ * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+ * a signed 32-bit integer. Will be assumed to be hexadecimal if it contains A-F
+ * characters but no prefix. By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_I32FromString(
+    utf8str str,
+    i32* value
+);
+
+/**
+ * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+ * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+ * a signed 64-bit integer. Will be assumed to be hexadecimal if it contains A-F
+ * characters but no prefix. By default (no prefix), decimal base is assumed.
+ */
+b8 PNSLR_I64FromString(
+    utf8str str,
+    i64* value
 );
 
 // #######################################################################################
@@ -1222,14 +1775,24 @@ PNSLR_File PNSLR_OpenFileToWrite(
 
 /**
  * Gets the size of an opened file.
+ * Returns 0 on error.
  */
 i64 PNSLR_GetSizeOfFile(
     PNSLR_File handle
 );
 
 /**
+ * Gets the current position in an opened file.
+ * Returns -1 on error.
+ */
+i64 PNSLR_GetCurrentPositionInFile(
+    PNSLR_File handle
+);
+
+/**
  * Seeks to a specific position in an opened file.
  * If not relative, it's absolute from the start.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_SeekPositionInFile(
     PNSLR_File handle,
@@ -1239,14 +1802,18 @@ b8 PNSLR_SeekPositionInFile(
 
 /**
  * Reads data from an opened file at the current position.
+ * Optionally stores the number of bytes read.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_ReadFromFile(
     PNSLR_File handle,
-    PNSLR_ArraySlice(u8) dst
+    PNSLR_ArraySlice(u8) dst,
+    i64* readSize
 );
 
 /**
  * Writes data to an opened file at the current position.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_WriteToFile(
     PNSLR_File handle,
@@ -1254,7 +1821,19 @@ b8 PNSLR_WriteToFile(
 );
 
 /**
+ * Formats a string with the given format and arguments, writing the
+ * result to the file.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_FormatAndWriteToFile(
+    PNSLR_File handle,
+    utf8str fmtStr,
+    PNSLR_ArraySlice(PNSLR_PrimitiveFmtOptions) args
+);
+
+/**
  * Truncates an opened file to a specific size.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_TruncateFile(
     PNSLR_File handle,
@@ -1263,6 +1842,7 @@ b8 PNSLR_TruncateFile(
 
 /**
  * Flushes any buffered data to the file.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_FlushFile(
     PNSLR_File handle
@@ -1278,6 +1858,7 @@ void PNSLR_CloseFileHandle(
 /**
  * Reads a file fully end-to-end and stores in a buffer. Won't work if dst is nil.
  * Provided allocator is used for creating the buffer.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_ReadAllContentsFromFile(
     PNSLR_Path path,
@@ -1287,6 +1868,7 @@ b8 PNSLR_ReadAllContentsFromFile(
 
 /**
  * Dump a bunch of data into a file. Optionally append it instead of overwriting.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_WriteAllContentsToFile(
     PNSLR_Path path,
@@ -1296,6 +1878,7 @@ b8 PNSLR_WriteAllContentsToFile(
 
 /**
  * Copies a file from src to dst. If dst exists, it will be overwritten.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_CopyFile(
     PNSLR_Path src,
@@ -1304,6 +1887,7 @@ b8 PNSLR_CopyFile(
 
 /**
  * Moves a file from src to dst. If dst exists, it will be overwritten.
+ * Returns true on success, false on failure.
  */
 b8 PNSLR_MoveFile(
     PNSLR_Path src,
@@ -1364,6 +1948,150 @@ b8 PNSLR_GetInterfaceIPAddresses(
     PNSLR_Allocator allocator
 );
 
+// #######################################################################################
+// Stream
+// #######################################################################################
+
+// Stream Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Defines the mode to be used when calling the stream function.
+ */
+typedef u8 PNSLR_StreamMode /* use as value */;
+#define PNSLR_StreamMode_GetSize ((PNSLR_StreamMode) 0)
+#define PNSLR_StreamMode_GetCurrentPos ((PNSLR_StreamMode) 1)
+#define PNSLR_StreamMode_SeekAbsolute ((PNSLR_StreamMode) 2)
+#define PNSLR_StreamMode_SeekRelative ((PNSLR_StreamMode) 3)
+#define PNSLR_StreamMode_Read ((PNSLR_StreamMode) 4)
+#define PNSLR_StreamMode_Write ((PNSLR_StreamMode) 5)
+#define PNSLR_StreamMode_Truncate ((PNSLR_StreamMode) 6)
+#define PNSLR_StreamMode_Flush ((PNSLR_StreamMode) 7)
+#define PNSLR_StreamMode_Close ((PNSLR_StreamMode) 8)
+
+/**
+ * Defines the delegate type for the stream function
+ */
+typedef b8 (*PNSLR_StreamProcedure)(
+    rawptr streamData,
+    PNSLR_StreamMode mode,
+    PNSLR_ArraySlice(u8) data,
+    i64 offset,
+    i64* extraRet
+);
+
+/**
+ * Defines a generic stream, that can be used for reading/writing data.
+ */
+typedef struct PNSLR_Stream
+{
+    PNSLR_StreamProcedure procedure;
+    rawptr data;
+} PNSLR_Stream;
+
+PNSLR_DECLARE_ARRAY_SLICE(PNSLR_Stream);
+
+// Stream ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Gets the size of the stream.
+ * Returns 0 on error.
+ */
+i64 PNSLR_GetSizeOfStream(
+    PNSLR_Stream stream
+);
+
+/**
+ * Gets the current position in the stream.
+ * Returns -1 on error.
+ */
+i64 PNSLR_GetCurrentPositionInStream(
+    PNSLR_Stream stream
+);
+
+/**
+ * Seeks to a new position in the stream.
+ * If 'relative' is true, the new position is relative to the current position.
+ * If 'relative' is false, the new position is absolute from the start.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_SeekPositionInStream(
+    PNSLR_Stream stream,
+    i64 newPos,
+    b8 relative
+);
+
+/**
+ * Reads data from the stream into the provided buffer.
+ * Optionally stores the number of bytes read.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_ReadFromStream(
+    PNSLR_Stream stream,
+    PNSLR_ArraySlice(u8) dst,
+    i64* readSize
+);
+
+/**
+ * Writes data from the provided buffer into the stream.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_WriteToStream(
+    PNSLR_Stream stream,
+    PNSLR_ArraySlice(u8) src
+);
+
+/**
+ * Formats a string and writes it to the stream.
+ * Only supports primitives, for obvious reasons.
+ * Use with `PNSLR_FmtB8`, `PNSLR_FmtI32`, etc.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_FormatAndWriteToStream(
+    PNSLR_Stream stream,
+    utf8str fmtStr,
+    PNSLR_ArraySlice(PNSLR_PrimitiveFmtOptions) args
+);
+
+/**
+ * Truncates the stream to the specified size.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_TruncateStream(
+    PNSLR_Stream stream,
+    i64 newSize
+);
+
+/**
+ * Flushes any buffered data to the stream.
+ * Returns true on success, false on failure.
+ */
+b8 PNSLR_FlushStream(
+    PNSLR_Stream stream
+);
+
+/**
+ * Closes the stream and frees any associated resources.
+ */
+void PNSLR_CloseStream(
+    PNSLR_Stream stream
+);
+
+// Stream casts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Creates a stream from a file handle.
+ */
+PNSLR_Stream PNSLR_StreamFromFile(
+    PNSLR_File file
+);
+
+/**
+ * Creates a stream from a string builder.
+ */
+PNSLR_Stream PNSLR_StreamFromStringBuilder(
+    PNSLR_StringBuilder* builder
+);
+
 #undef PNSLR_ALIGNAS
 
 #ifdef __cplusplus
@@ -1400,5 +2128,12 @@ b8 PNSLR_GetInterfaceIPAddresses(
 /** Resize a 'slice' (passed by ptr) to one with 'newCount' elements of type 'ty' using the provided allocator. Optionally zeroed. */
 #define PNSLR_ResizeSlice(ty, slice, newCount, zeroed, allocator, loc, error__) \
     do { if (slice) PNSLR_ResizeRawSlice(&((slice)->raw), (i32) sizeof(ty), (i32) alignof(ty), (i64) newCount, zeroed, allocator, loc, error__); } while(0)
+
+/** Easier way to pass format arguments. */
+#define PNSLR_FmtArgs(...) (PNSLR_ArraySlice(PNSLR_PrimitiveFmtOptions)) \
+    { \
+        .data = (PNSLR_PrimitiveFmtOptions[]){__VA_ARGS__}, \
+        .count = sizeof((PNSLR_PrimitiveFmtOptions[]){__VA_ARGS__})/sizeof(PNSLR_PrimitiveFmtOptions) \
+    }
 
 #endif//PNSLR_MAIN_H

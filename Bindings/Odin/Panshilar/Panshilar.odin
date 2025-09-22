@@ -6,9 +6,9 @@ import "../Intrinsics"
 // Environment
 // #######################################################################################
 
-/**
- * Defines the platforms supported by the library.
- */
+/*
+Defines the platforms supported by the library.
+*/
 Platform :: enum u8 {
 	Unknown = 0,
 	Windows = 1,
@@ -21,9 +21,9 @@ Platform :: enum u8 {
 	Switch = 8,
 }
 
-/**
- * Defines the architectures supported by the library.
- */
+/*
+Defines the architectures supported by the library.
+*/
 Architecture :: enum u8 {
 	Unknown = 0,
 	X64 = 1,
@@ -32,17 +32,17 @@ Architecture :: enum u8 {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Get the current platform.
-     */
+	/*
+	Get the current platform.
+	*/
 	GetPlatform :: proc "c" () -> Platform ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Get the current architecture.
-     */
+	/*
+	Get the current architecture.
+	*/
 	GetArchitecture :: proc "c" () -> Architecture ---
 }
 
@@ -50,9 +50,9 @@ foreign {
 // Runtime
 // #######################################################################################
 
-/**
- * Defines the source code location for debugging purposes.
- */
+/*
+Defines the source code location for debugging purposes.
+*/
 SourceCodeLocation :: struct  {
 	file: string,
 	line: i32,
@@ -66,26 +66,26 @@ SourceCodeLocation :: struct  {
 
 // Mutex ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * The most basic synchronization primitive.
- */
+/*
+The most basic synchronization primitive.
+*/
 Mutex :: struct #align(8)  {
 	buffer: [64]u8,
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Creates a mutex.
-     */
+	/*
+	Creates a mutex.
+	*/
 	CreateMutex :: proc "c" () -> Mutex ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroys a mutex.
-     */
+	/*
+	Destroys a mutex.
+	*/
 	DestroyMutex :: proc "c" (
 		mutex: ^Mutex,
 	) ---
@@ -93,9 +93,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Locks a mutex.
-     */
+	/*
+	Locks a mutex.
+	*/
 	LockMutex :: proc "c" (
 		mutex: ^Mutex,
 	) ---
@@ -103,9 +103,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Unlocks a mutex.
-     */
+	/*
+	Unlocks a mutex.
+	*/
 	UnlockMutex :: proc "c" (
 		mutex: ^Mutex,
 	) ---
@@ -113,39 +113,39 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Tries to lock a mutex.
-     * Returns true if the mutex was successfully locked, false otherwise.
-     */
+	/*
+	Tries to lock a mutex.
+	Returns true if the mutex was successfully locked, false otherwise.
+	*/
 	TryLockMutex :: proc "c" (
 		mutex: ^Mutex,
 	) -> b8 ---
 }
 
-// Read-Write ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Read-Write Mutex ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * A read-write mutex.
- * This is a synchronization primitive that allows multiple readers or a single writer.
- * It is useful for scenarios where reads are more frequent than writes.
- */
+/*
+A read-write mutex.
+This is a synchronization primitive that allows multiple readers or a single writer.
+It is useful for scenarios where reads are more frequent than writes.
+*/
 RWMutex :: struct #align(8)  {
 	buffer: [200]u8,
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Creates a read-write mutex.
-     */
+	/*
+	Creates a read-write mutex.
+	*/
 	CreateRWMutex :: proc "c" () -> RWMutex ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroys a read-write mutex.
-     */
+	/*
+	Destroys a read-write mutex.
+	*/
 	DestroyRWMutex :: proc "c" (
 		rwmutex: ^RWMutex,
 	) ---
@@ -153,10 +153,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Locks a read-write mutex for reading.
-     * Multiple threads can read simultaneously.
-     */
+	/*
+	Locks a read-write mutex for reading.
+	Multiple threads can read simultaneously.
+	*/
 	LockRWMutexShared :: proc "c" (
 		rwmutex: ^RWMutex,
 	) ---
@@ -164,10 +164,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Locks a read-write mutex for writing.
-     * Only one thread can write at a time, and no other threads can read while writing.
-     */
+	/*
+	Locks a read-write mutex for writing.
+	Only one thread can write at a time, and no other threads can read while writing.
+	*/
 	LockRWMutexExclusive :: proc "c" (
 		rwmutex: ^RWMutex,
 	) ---
@@ -175,10 +175,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Unlocks a read-write mutex after reading.
-     * Allows other threads to read or write.
-     */
+	/*
+	Unlocks a read-write mutex after reading.
+	Allows other threads to read or write.
+	*/
 	UnlockRWMutexShared :: proc "c" (
 		rwmutex: ^RWMutex,
 	) ---
@@ -186,10 +186,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Unlocks a read-write mutex after writing.
-     * Allows other threads to read or write.
-     */
+	/*
+	Unlocks a read-write mutex after writing.
+	Allows other threads to read or write.
+	*/
 	UnlockRWMutexExclusive :: proc "c" (
 		rwmutex: ^RWMutex,
 	) ---
@@ -197,10 +197,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Tries to lock a read-write mutex for reading.
-     * Returns true if the mutex was successfully locked for reading, false otherwise.
-     */
+	/*
+	Tries to lock a read-write mutex for reading.
+	Returns true if the mutex was successfully locked for reading, false otherwise.
+	*/
 	TryLockRWMutexShared :: proc "c" (
 		rwmutex: ^RWMutex,
 	) -> b8 ---
@@ -208,10 +208,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Tries to lock a read-write mutex for writing.
-     * Returns true if the mutex was successfully locked for writing, false otherwise.
-     */
+	/*
+	Tries to lock a read-write mutex for writing.
+	Returns true if the mutex was successfully locked for writing, false otherwise.
+	*/
 	TryLockRWMutexExclusive :: proc "c" (
 		rwmutex: ^RWMutex,
 	) -> b8 ---
@@ -219,20 +219,20 @@ foreign {
 
 // Semaphore ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * A semaphore synchronization primitive.
- * It allows a certain number of threads to access a resource concurrently.
- */
+/*
+A semaphore synchronization primitive.
+It allows a certain number of threads to access a resource concurrently.
+*/
 Semaphore :: struct #align(8)  {
 	buffer: [32]u8,
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Creates a semaphore.
-     * The initial count specifies how many threads can access the resource concurrently.
-     */
+	/*
+	Creates a semaphore.
+	The initial count specifies how many threads can access the resource concurrently.
+	*/
 	CreateSemaphore :: proc "c" (
 		initialCount: i32,
 	) -> Semaphore ---
@@ -240,9 +240,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroys a semaphore.
-     */
+	/*
+	Destroys a semaphore.
+	*/
 	DestroySemaphore :: proc "c" (
 		semaphore: ^Semaphore,
 	) ---
@@ -250,10 +250,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Waits on a semaphore.
-     * The calling thread will block until the semaphore count is greater than zero.
-     */
+	/*
+	Waits on a semaphore.
+	The calling thread will block until the semaphore count is greater than zero.
+	*/
 	WaitSemaphore :: proc "c" (
 		semaphore: ^Semaphore,
 	) ---
@@ -261,11 +261,11 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Waits on a semaphore with a timeout.
-     * The calling thread will block until the semaphore count is greater than zero or the timeout expires.
-     * Returns true if the semaphore was acquired, false if the timeout expired.
-     */
+	/*
+	Waits on a semaphore with a timeout.
+	The calling thread will block until the semaphore count is greater than zero or the timeout expires.
+	Returns true if the semaphore was acquired, false if the timeout expired.
+	*/
 	WaitSemaphoreTimeout :: proc "c" (
 		semaphore: ^Semaphore,
 		timeoutNs: i32,
@@ -274,39 +274,39 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Signals a semaphore, incrementing its count by a specified amount.
-     * If the count was zero, this will wake up one or more waiting threads.
-     */
+	/*
+	Signals a semaphore, incrementing its count by a specified amount.
+	If the count was zero, this will wake up one or more waiting threads.
+	*/
 	SignalSemaphore :: proc "c" (
 		semaphore: ^Semaphore,
 		count: i32,
 	) ---
 }
 
-// Condition ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Condition Variable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * A condition variable for signaling between threads.
- * It allows threads to wait for a condition to be signaled.
- */
+/*
+A condition variable for signaling between threads.
+It allows threads to wait for a condition to be signaled.
+*/
 ConditionVariable :: struct #align(8)  {
 	buffer: [48]u8,
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Creates a condition variable.
-     */
+	/*
+	Creates a condition variable.
+	*/
 	CreateConditionVariable :: proc "c" () -> ConditionVariable ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroys a condition variable.
-     */
+	/*
+	Destroys a condition variable.
+	*/
 	DestroyConditionVariable :: proc "c" (
 		condvar: ^ConditionVariable,
 	) ---
@@ -314,11 +314,11 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Waits on a condition variable.
-     * The calling thread will block until the condition variable is signaled.
-     * The mutex must be locked before calling this function.
-     */
+	/*
+	Waits on a condition variable.
+	The calling thread will block until the condition variable is signaled.
+	The mutex must be locked before calling this function.
+	*/
 	WaitConditionVariable :: proc "c" (
 		condvar: ^ConditionVariable,
 		mutex: ^Mutex,
@@ -327,12 +327,12 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Waits on a condition variable with a timeout.
-     * The calling thread will block until the condition variable is signaled or the timeout expires.
-     * The mutex must be locked before calling this function.
-     * Returns true if the condition variable was signaled, false if the timeout expired.
-     */
+	/*
+	Waits on a condition variable with a timeout.
+	The calling thread will block until the condition variable is signaled or the timeout expires.
+	The mutex must be locked before calling this function.
+	Returns true if the condition variable was signaled, false if the timeout expired.
+	*/
 	WaitConditionVariableTimeout :: proc "c" (
 		condvar: ^ConditionVariable,
 		mutex: ^Mutex,
@@ -342,10 +342,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Signals a condition variable, waking up one waiting thread.
-     * If no threads are waiting, this has no effect.
-     */
+	/*
+	Signals a condition variable, waking up one waiting thread.
+	If no threads are waiting, this has no effect.
+	*/
 	SignalConditionVariable :: proc "c" (
 		condvar: ^ConditionVariable,
 	) ---
@@ -353,10 +353,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Signals a condition variable, waking up all waiting threads.
-     * If no threads are waiting, this has no effect.
-     */
+	/*
+	Signals a condition variable, waking up all waiting threads.
+	If no threads are waiting, this has no effect.
+	*/
 	BroadcastConditionVariable :: proc "c" (
 		condvar: ^ConditionVariable,
 	) ---
@@ -368,9 +368,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Set a block of memory to a specific value.
-     */
+	/*
+	Set a block of memory to a specific value.
+	*/
 	MemSet :: proc "c" (
 		memory: rawptr,
 		value: i32,
@@ -380,9 +380,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Copy a block of memory from source to destination.
-     */
+	/*
+	Copy a block of memory from source to destination.
+	*/
 	MemCopy :: proc "c" (
 		destination: rawptr,
 		source: rawptr,
@@ -392,9 +392,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Copy a block of memory from source to destination, handling overlapping regions.
-     */
+	/*
+	Copy a block of memory from source to destination, handling overlapping regions.
+	*/
 	MemMove :: proc "c" (
 		destination: rawptr,
 		source: rawptr,
@@ -406,11 +406,11 @@ foreign {
 // Allocators
 // #######################################################################################
 
-// Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Allocator Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * Defines the mode to be used when calling the allocator function.
- */
+/*
+Defines the mode to be used when calling the allocator function.
+*/
 AllocatorMode :: enum u8 {
 	Allocate = 0,
 	Resize = 1,
@@ -421,9 +421,9 @@ AllocatorMode :: enum u8 {
 	QueryCapabilities = 255,
 }
 
-/**
- * Defines the capabilities of an allocator.
- */
+/*
+Defines the capabilities of an allocator.
+*/
 AllocatorCapability :: distinct bit_set[AllocatorCapabilityValues; u64]
 
 AllocatorCapabilityValues :: enum u8 {
@@ -438,9 +438,9 @@ AllocatorCapabilityValues :: enum u8 {
 	HintDebug = 30,
 }
 
-/**
- * Defines the error codes that can be returned by the allocator.
- */
+/*
+Defines the error codes that can be returned by the allocator.
+*/
 AllocatorError :: enum u8 {
 	None = 0,
 	OutOfMemory = 1,
@@ -453,9 +453,9 @@ AllocatorError :: enum u8 {
 	CantFreeAll = 8,
 }
 
-/**
- * Defines the delegate type for the allocator function.
- */
+/*
+Defines the delegate type for the allocator function.
+*/
 AllocatorProcedure :: #type proc "c" (
 	allocatorData: rawptr,
 	mode: AllocatorMode,
@@ -467,9 +467,9 @@ AllocatorProcedure :: #type proc "c" (
 	error: ^AllocatorError,
 ) -> rawptr
 
-/**
- * Defines a generic allocator structure that can be used to allocate, resize, and free memory.
- */
+/*
+Defines a generic allocator structure that can be used to allocate, resize, and free memory.
+*/
 Allocator :: struct  {
 	procedure: AllocatorProcedure,
 	data: rawptr,
@@ -477,28 +477,28 @@ Allocator :: struct  {
 
 // declare []Allocator
 
-// Allocation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Allocation ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Allocate memory using the provided allocator.
-     */
+	/*
+	Allocate memory using the provided allocator.
+	*/
 	Allocate :: proc "c" (
 		allocator: Allocator,
 		zeroed: b8,
 		size: i32,
 		alignment: i32,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> rawptr ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Resize memory using the provided allocator.
-     */
+	/*
+	Resize memory using the provided allocator.
+	*/
 	Resize :: proc "c" (
 		allocator: Allocator,
 		zeroed: b8,
@@ -507,15 +507,15 @@ foreign {
 		newSize: i32,
 		alignment: i32,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> rawptr ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Fallback resize function that can be used when the allocator does not support resizing.
-     */
+	/*
+	Fallback resize function that can be used when the allocator does not support resizing.
+	*/
 	DefaultResize :: proc "c" (
 		allocator: Allocator,
 		zeroed: b8,
@@ -524,73 +524,73 @@ foreign {
 		newSize: i32,
 		alignment: i32,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> rawptr ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Free memory using the provided allocator.
-     */
+	/*
+	Free memory using the provided allocator.
+	*/
 	Free :: proc "c" (
 		allocator: Allocator,
 		memory: rawptr,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Free all memory allocated by the provided allocator.
-     */
+	/*
+	Free all memory allocated by the provided allocator.
+	*/
 	FreeAll :: proc "c" (
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Query the capabilities of the provided allocator.
-     */
+	/*
+	Query the capabilities of the provided allocator.
+	*/
 	QueryAllocatorCapabilities :: proc "c" (
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> u64 ---
 }
 
-// Nil ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Nil allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Get the 'nil' allocator. Reports 'out of memory' when requesting memory.
-     * Otherwise no-ops all around.
-     */
+	/*
+	Get the 'nil' allocator. Reports 'out of memory' when requesting memory.
+	Otherwise no-ops all around.
+	*/
 	GetAllocator_Nil :: proc "c" () -> Allocator ---
 }
 
-// Default ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Default Heap Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Get the default heap allocator.
-     */
+	/*
+	Get the default heap allocator.
+	*/
 	GetAllocator_DefaultHeap :: proc "c" () -> Allocator ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Main allocator function for the default heap allocator.
-     */
+	/*
+	Main allocator function for the default heap allocator.
+	*/
 	AllocatorFn_DefaultHeap :: proc "c" (
 		allocatorData: rawptr,
 		mode: AllocatorMode,
@@ -603,11 +603,11 @@ foreign {
 	) -> rawptr ---
 }
 
-// Arena ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Arena Alloator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * A block of memory used by the arena allocator.
- */
+/*
+A block of memory used by the arena allocator.
+*/
 ArenaAllocatorBlock :: struct  {
 	previous: ^ArenaAllocatorBlock,
 	allocator: Allocator,
@@ -616,9 +616,9 @@ ArenaAllocatorBlock :: struct  {
 	used: u32,
 }
 
-/**
- * The payload used by the arena allocator.
- */
+/*
+The payload used by the arena allocator.
+*/
 ArenaAllocatorPayload :: struct  {
 	backingAllocator: Allocator,
 	currentBlock: ^ArenaAllocatorBlock,
@@ -630,38 +630,38 @@ ArenaAllocatorPayload :: struct  {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Create a new arena allocator with the specified backing allocator.
-     * The arena allocator will use the backing allocator to allocate its blocks.
-     * The arena allocator will not free the backing allocator, so it is the caller's responsibility to
-     * free the backing allocator when it is no longer needed.
-     */
+	/*
+	Create a new arena allocator with the specified backing allocator.
+	The arena allocator will use the backing allocator to allocate its blocks.
+	The arena allocator will not free the backing allocator, so it is the caller's responsibility to
+	free the backing allocator when it is no longer needed.
+	*/
 	NewAllocator_Arena :: proc "c" (
 		backingAllocator: Allocator,
 		pageSize: u32,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> Allocator ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroy an arena allocator and free all its resources.
-     * This does not free the backing allocator, only the arena allocator's own resources.
-     */
+	/*
+	Destroy an arena allocator and free all its resources.
+	This does not free the backing allocator, only the arena allocator's own resources.
+	*/
 	DestroyAllocator_Arena :: proc "c" (
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Main allocator function for the arena allocator.
-     */
+	/*
+	Main allocator function for the arena allocator.
+	*/
 	AllocatorFn_Arena :: proc "c" (
 		allocatorData: rawptr,
 		mode: AllocatorMode,
@@ -682,10 +682,10 @@ ArenaSnapshotError :: enum u8 {
 	DoubleRestoreOrDiscardUsage = 4,
 }
 
-/**
- * A snapshot of the arena allocator, recording its state at a specific point in time.
- * Can be saved/loaded/discarded as needed.
- */
+/*
+A snapshot of the arena allocator, recording its state at a specific point in time.
+Can be saved/loaded/discarded as needed.
+*/
 ArenaAllocatorSnapshot :: struct  {
 	valid: b8,
 	payload: ^ArenaAllocatorPayload,
@@ -695,10 +695,10 @@ ArenaAllocatorSnapshot :: struct  {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Ensures that the arena allocator has either restored/discarded all the
-     * snapshots that were taken.
-     */
+	/*
+	Ensures that the arena allocator has either restored/discarded all the
+	snapshots that were taken.
+	*/
 	ValidateArenaAllocatorSnapshotState :: proc "c" (
 		allocator: Allocator,
 	) -> b8 ---
@@ -706,10 +706,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Captures a snapshot of the arena allocator.
-     * The returned value can be used to load back the existing state at this point.
-     */
+	/*
+	Captures a snapshot of the arena allocator.
+	The returned value can be used to load back the existing state at this point.
+	*/
 	CaptureArenaAllocatorSnapshot :: proc "c" (
 		allocator: Allocator,
 	) -> ArenaAllocatorSnapshot ---
@@ -717,10 +717,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Restores the state of the arena allocator from a snapshot.
-     * Upon success, the snapshot is marked as invalid.
-     */
+	/*
+	Restores the state of the arena allocator from a snapshot.
+	Upon success, the snapshot is marked as invalid.
+	*/
 	RestoreArenaAllocatorSnapshot :: proc "c" (
 		snapshot: ^ArenaAllocatorSnapshot,
 		loc: SourceCodeLocation,
@@ -729,29 +729,29 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Discards a snapshot of the arena allocator.
-     */
+	/*
+	Discards a snapshot of the arena allocator.
+	*/
 	DiscardArenaAllocatorSnapshot :: proc "c" (
 		snapshot: ^ArenaAllocatorSnapshot,
 	) -> ArenaSnapshotError ---
 }
 
-// Stack ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Stack Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * A page of a stack allocator.
- */
+/*
+A page of a stack allocator.
+*/
 StackAllocatorPage :: struct #align(8)  {
 	previousPage: ^StackAllocatorPage,
 	usedBytes: u64,
 	buffer: [8192]u8,
 }
 
-/**
- * The header used for every separate stack allocation.
- * This is used to store metadata about the allocation and deallocate appropriately.
- */
+/*
+The header used for every separate stack allocation.
+This is used to store metadata about the allocation and deallocate appropriately.
+*/
 StackAllocationHeader :: struct  {
 	page: ^StackAllocatorPage,
 	size: i32,
@@ -760,9 +760,9 @@ StackAllocationHeader :: struct  {
 	lastAllocationHeader: rawptr,
 }
 
-/**
- * The payload used by the stack allocator.
- */
+/*
+The payload used by the stack allocator.
+*/
 StackAllocatorPayload :: struct  {
 	backingAllocator: Allocator,
 	currentPage: ^StackAllocatorPage,
@@ -772,37 +772,37 @@ StackAllocatorPayload :: struct  {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Create a stack allocator with the specified backing allocator.
-     * The stack allocator will use the backing allocator to allocate its pages.
-     * The stack allocator will not free the backing allocator, so it is the caller's responsibility to
-     * free the backing allocator when it is no longer needed.
-     */
+	/*
+	Create a stack allocator with the specified backing allocator.
+	The stack allocator will use the backing allocator to allocate its pages.
+	The stack allocator will not free the backing allocator, so it is the caller's responsibility to
+	free the backing allocator when it is no longer needed.
+	*/
 	NewAllocator_Stack :: proc "c" (
 		backingAllocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> Allocator ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Destroy a stack allocator and free all its resources.
-     * This does not free the backing allocator, only the stack allocator's own resources.
-     */
+	/*
+	Destroy a stack allocator and free all its resources.
+	This does not free the backing allocator, only the stack allocator's own resources.
+	*/
 	DestroyAllocator_Stack :: proc "c" (
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Main allocator function for the stack allocator.
-     */
+	/*
+	Main allocator function for the stack allocator.
+	*/
 	AllocatorFn_Stack :: proc "c" (
 		allocatorData: rawptr,
 		mode: AllocatorMode,
@@ -815,13 +815,13 @@ foreign {
 	) -> rawptr ---
 }
 
-// Collections ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Collections make/free functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Allocate a raw array slice of 'count' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
-     */
+	/*
+	Allocate a raw array slice of 'count' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
+	*/
 	MakeRawSlice :: proc "c" (
 		tySize: i32,
 		tyAlign: i32,
@@ -829,28 +829,28 @@ foreign {
 		zeroed: b8,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> Intrinsics.RawArraySlice ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Free a raw array slice allocated with `PNSLR_MakeRawSlice`, using the provided allocator.
-     */
+	/*
+	Free a raw array slice allocated with `PNSLR_MakeRawSlice`, using the provided allocator.
+	*/
 	FreeRawSlice :: proc "c" (
 		slice: ^Intrinsics.RawArraySlice,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Resize a raw array slice to one with 'newCount' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
-     */
+	/*
+	Resize a raw array slice to one with 'newCount' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
+	*/
 	ResizeRawSlice :: proc "c" (
 		slice: ^Intrinsics.RawArraySlice,
 		tySize: i32,
@@ -859,61 +859,61 @@ foreign {
 		zeroed: b8,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Allocate a UTF-8 string of 'count__' characters using the provided allocator. Optionally zeroed.
-     */
+	/*
+	Allocate a UTF-8 string of 'count__' characters using the provided allocator. Optionally zeroed.
+	*/
 	MakeString :: proc "c" (
 		count: i64,
 		zeroed: b8,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> string ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Free a UTF-8 string allocated with `PNSLR_MakeString`, using the provided allocator.
-     */
+	/*
+	Free a UTF-8 string allocated with `PNSLR_MakeString`, using the provided allocator.
+	*/
 	FreeString :: proc "c" (
 		str: string,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Allocate a C-style null-terminated string of 'count__' characters (excluding the null terminator) using the provided allocator. Optionally zeroed.
-     */
+	/*
+	Allocate a C-style null-terminated string of 'count__' characters (excluding the null terminator) using the provided allocator. Optionally zeroed.
+	*/
 	MakeCString :: proc "c" (
 		count: i64,
 		zeroed: b8,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) -> cstring ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Free a C-style null-terminated string allocated with `PNSLR_MakeCString`, using the provided allocator.
-     */
+	/*
+	Free a C-style null-terminated string allocated with `PNSLR_MakeCString`, using the provided allocator.
+	*/
 	FreeCString :: proc "c" (
 		str: cstring,
 		allocator: Allocator,
 		location: SourceCodeLocation,
-		error: ^AllocatorError,
+		error: ^AllocatorError = { },
 	) ---
 }
 
@@ -923,9 +923,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns the current time in nanoseconds since the Unix epoch (January 1, 1970).
-     */
+	/*
+	Returns the current time in nanoseconds since the Unix epoch (January 1, 1970).
+	*/
 	NanosecondsSinceUnixEpoch :: proc "c" () -> i64 ---
 }
 
@@ -937,9 +937,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns the length of the given C-style null-terminated string, excluding the null terminator.
-     */
+	/*
+	Returns the length of the given C-style null-terminated string, excluding the null terminator.
+	*/
 	GetCStringLength :: proc "c" (
 		str: cstring,
 	) -> i32 ---
@@ -947,9 +947,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Clone a C-style string into a new allocated string.
-     */
+	/*
+	Clone a C-style string into a new allocated string.
+	*/
 	StringFromCString :: proc "c" (
 		str: cstring,
 	) -> string ---
@@ -957,10 +957,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Clones a UTF-8 string to a C-style null-terminated string.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Clones a UTF-8 string to a C-style null-terminated string.
+	The returned string is allocated using the specified allocator.
+	*/
 	CStringFromString :: proc "c" (
 		str: string,
 		allocator: Allocator,
@@ -969,10 +969,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Clones a UTF-8 string to a new allocated UTF-8 string.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Clones a UTF-8 string to a new allocated UTF-8 string.
+	The returned string is allocated using the specified allocator.
+	*/
 	CloneString :: proc "c" (
 		str: string,
 		allocator: Allocator,
@@ -983,10 +983,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Concatenates two UTF-8 strings into a new allocated string.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Concatenates two UTF-8 strings into a new allocated string.
+	The returned string is allocated using the specified allocator.
+	*/
 	ConcatenateStrings :: proc "c" (
 		str1: string,
 		str2: string,
@@ -998,10 +998,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Converts a UTF-8 string to uppercase.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Converts a UTF-8 string to uppercase.
+	The returned string is allocated using the specified allocator.
+	*/
 	UpperString :: proc "c" (
 		str: string,
 		allocator: Allocator,
@@ -1010,10 +1010,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Converts a UTF-8 string to lowercase.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Converts a UTF-8 string to lowercase.
+	The returned string is allocated using the specified allocator.
+	*/
 	LowerString :: proc "c" (
 		str: string,
 		allocator: Allocator,
@@ -1022,9 +1022,9 @@ foreign {
 
 // Comparisons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * Represents the type of string comparison to perform.
- */
+/*
+Represents the type of string comparison to perform.
+*/
 StringComparisonType :: enum u8 {
 	CaseSensitive = 0,
 	CaseInsensitive = 1,
@@ -1032,199 +1032,199 @@ StringComparisonType :: enum u8 {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if two UTF-8 strings contain the same data.
-     * Returns true if they are equal, false otherwise.
-     */
+	/*
+	Checks if two UTF-8 strings contain the same data.
+	Returns true if they are equal, false otherwise.
+	*/
 	AreStringsEqual :: proc "c" (
 		str1: string,
 		str2: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Asymmetric equality-check between a UTF-8 string and a C-style null-terminated string.
-     * Returns true if they are equal, false otherwise.
-     */
+	/*
+	Asymmetric equality-check between a UTF-8 string and a C-style null-terminated string.
+	Returns true if they are equal, false otherwise.
+	*/
 	AreStringAndCStringEqual :: proc "c" (
 		str1: string,
 		str2: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if two C-style null-terminated strings are equal.
-     * Returns true if they are equal, false otherwise.
-     */
+	/*
+	Checks if two C-style null-terminated strings are equal.
+	Returns true if they are equal, false otherwise.
+	*/
 	AreCStringsEqual :: proc "c" (
 		str1: cstring,
 		str2: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a UTF-8 string starts with the specified prefix.
-     * Returns true if it does, false otherwise.
-     */
+	/*
+	Checks if a UTF-8 string starts with the specified prefix.
+	Returns true if it does, false otherwise.
+	*/
 	StringStartsWith :: proc "c" (
 		str: string,
 		prefix: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a UTF-8 string ends with the specified suffix.
-     * Returns true if it does, false otherwise.
-     */
+	/*
+	Checks if a UTF-8 string ends with the specified suffix.
+	Returns true if it does, false otherwise.
+	*/
 	StringEndsWith :: proc "c" (
 		str: string,
 		suffix: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a C-style null-terminated string starts with the specified prefix.
-     */
+	/*
+	Checks if a C-style null-terminated string starts with the specified prefix.
+	*/
 	StringStartsWithCString :: proc "c" (
 		str: string,
 		prefix: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a C-style null-terminated string ends with the specified suffix.
-     */
+	/*
+	Checks if a C-style null-terminated string ends with the specified suffix.
+	*/
 	StringEndsWithCString :: proc "c" (
 		str: string,
 		suffix: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns the length of the given C-style null-terminated string, excluding the null terminator.
-     */
+	/*
+	Returns the length of the given C-style null-terminated string, excluding the null terminator.
+	*/
 	CStringStartsWith :: proc "c" (
 		str: cstring,
 		prefix: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a C-style null-terminated string ends with the specified UTF-8 suffix.
-     */
+	/*
+	Checks if a C-style null-terminated string ends with the specified UTF-8 suffix.
+	*/
 	CStringEndsWith :: proc "c" (
 		str: cstring,
 		suffix: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a C-style null-terminated string starts with the specified UTF-8 prefix.
-     */
+	/*
+	Checks if a C-style null-terminated string starts with the specified UTF-8 prefix.
+	*/
 	CStringStartsWithCString :: proc "c" (
 		str: string,
 		prefix: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a C-style null-terminated string ends with the specified UTF-8 suffix.
-     */
+	/*
+	Checks if a C-style null-terminated string ends with the specified UTF-8 suffix.
+	*/
 	CStringEndsWithCString :: proc "c" (
 		str: string,
 		suffix: cstring,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> b8 ---
 }
 
-// Advanced ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Advanced comparisons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Searches for the first occurrence of a substring within a string.
-     * Returns the index of the first occurrence, or -1 if not found.
-     */
+	/*
+	Searches for the first occurrence of a substring within a string.
+	Returns the index of the first occurrence, or -1 if not found.
+	*/
 	SearchFirstIndexInString :: proc "c" (
 		str: string,
 		substring: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> i32 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Searches for the last occurrence of a substring within a string.
-     * Returns the index of the last occurrence, or -1 if not found.
-     */
+	/*
+	Searches for the last occurrence of a substring within a string.
+	Returns the index of the last occurrence, or -1 if not found.
+	*/
 	SearchLastIndexInString :: proc "c" (
 		str: string,
 		substring: string,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> i32 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Replaces all occurrences of a substring within a string with a new value.
-     * The returned string is allocated using the specified allocator.
-     */
+	/*
+	Replaces all occurrences of a substring within a string with a new value.
+	The returned string is allocated using the specified allocator.
+	*/
 	ReplaceInString :: proc "c" (
 		str: string,
 		oldValue: string,
 		newValue: string,
 		allocator: Allocator,
-		comparisonType: StringComparisonType,
+		comparisonType: StringComparisonType = { },
 	) -> string ---
 }
 
-// UTF-8 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// UTF-8 functionalities ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/**
- * Result structure for UTF-8 rune encoding.
- * Contains the encoded bytes and the number of bytes used.
- */
+/*
+Result structure for UTF-8 rune encoding.
+Contains the encoded bytes and the number of bytes used.
+*/
 EncodedRune :: struct  {
 	data: [4]u8,
 	length: i32,
 }
 
-/**
- * Result structure for UTF-8 rune decoding.
- * Contains the decoded rune and the number of bytes consumed.
- */
+/*
+Result structure for UTF-8 rune decoding.
+Contains the decoded rune and the number of bytes consumed.
+*/
 DecodedRune :: struct  {
 	rune: u32,
 	length: i32,
@@ -1232,9 +1232,9 @@ DecodedRune :: struct  {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns the number of bytes required to encode the given rune in UTF-8.
-     */
+	/*
+	Returns the number of bytes required to encode the given rune in UTF-8.
+	*/
 	GetRuneLength :: proc "c" (
 		r: u32,
 	) -> i32 ---
@@ -1242,10 +1242,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Encodes a rune into UTF-8 byte sequence and returns the structure containing encoded bytes/length.
-     * Invalid runes or surrogates are replaced with the error rune (U+FFFD).
-     */
+	/*
+	Encodes a rune into UTF-8 byte sequence and returns the structure containing encoded bytes/length.
+	Invalid runes or surrogates are replaced with the error rune (U+FFFD).
+	*/
 	EncodeRune :: proc "c" (
 		c: u32,
 	) -> EncodedRune ---
@@ -1253,24 +1253,24 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Decodes a UTF-8 byte sequence into a rune and returns the structure containing the rune/length.
-     * Returns error rune (U+FFFD) for invalid sequences.
-     */
+	/*
+	Decodes a UTF-8 byte sequence into a rune and returns the structure containing the rune/length.
+	Returns error rune (U+FFFD) for invalid sequences.
+	*/
 	DecodeRune :: proc "c" (
 		s: []u8,
 	) -> DecodedRune ---
 }
 
-// Windows-specific ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Windows-specific bs for UTF-16 conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Converts a UTF-8 string to a UTF-16 string.
-     * The returned string is allocated using the specified allocator.
-     * Only available on Windows. Bad decision to use UTF-16 on Windows, but it's a legacy thing.
-     */
+	/*
+	Converts a UTF-8 string to a UTF-16 string.
+	The returned string is allocated using the specified allocator.
+	Only available on Windows. Bad decision to use UTF-16 on Windows, but it's a legacy thing.
+	*/
 	UTF16FromUTF8WindowsOnly :: proc "c" (
 		str: string,
 		allocator: Allocator,
@@ -1279,35 +1279,753 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Converts a UTF-16 string to a UTF-8 string.
-     * The returned string is allocated using the specified allocator.
-     * Only available on Windows. Bad decision to use UTF-16 on Windows, but it's a legacy thing.
-     */
+	/*
+	Converts a UTF-16 string to a UTF-8 string.
+	The returned string is allocated using the specified allocator.
+	Only available on Windows. Bad decision to use UTF-16 on Windows, but it's a legacy thing.
+	*/
 	UTF8FromUTF16WindowsOnly :: proc "c" (
 		utf16str: []u16,
 		allocator: Allocator,
 	) -> string ---
 }
 
+// String Builder ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+A basic string builder. Can accept strings and characters,
+and build a single string from them.
+ *
+Create by setting the allocator and zeroing the rest of the fields.
+*/
+StringBuilder :: struct  {
+	allocator: Allocator,
+	buffer: []u8,
+	writtenSize: i64,
+	cursorPos: i64,
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a single byte to the string builder. Could be an ANSI/ASCII character,
+	or not. The function does not check for validity.
+	*/
+	AppendByteToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		byte: u8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a UTF-8 string to the string builder.
+	*/
+	AppendStringToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		str: string,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a C-style null-terminated string to the string builder.
+	*/
+	AppendCStringToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		str: cstring,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a single character (rune) to the string builder.
+	*/
+	AppendRuneToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		rune: u32,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append an 8-bit boolean value to the string builder.
+	*/
+	AppendB8ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: b8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a 32-bit floating-point number to the string builder.
+	*/
+	AppendF32ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: f32,
+		decimalPlaces: i32,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a 64-bit floating point number to the string builder.
+	*/
+	AppendF64ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: f64,
+		decimalPlaces: i32,
+	) -> b8 ---
+}
+
+/*
+The base to use when appending integer numbers to the string builder.
+*/
+IntegerBase :: enum u8 {
+	Decimal = 0,
+	Binary = 1,
+	HexaDecimal = 2,
+	Octal = 3,
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append an unsigned 8-bit integer to the string builder.
+	*/
+	AppendU8ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: u8,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append an unsigned 16-bit integer to the string builder.
+	*/
+	AppendU16ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: u16,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append an unsigned 32-bit integer number to the string builder.
+	*/
+	AppendU32ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: u32,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append an unsigned 64-bit integer to the string builder.
+	*/
+	AppendU64ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: u64,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a signed 8-bit integer to the string builder.
+	*/
+	AppendI8ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: i8,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a signed 16-bit integer to the string builder.
+	*/
+	AppendI16ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: i16,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a signed 32-bit integer number to the string builder.
+	*/
+	AppendI32ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: i32,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Append a signed 64-bit integer to the string builder.
+	*/
+	AppendI64ToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		value: i64,
+		base: IntegerBase = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Return the string from the string builder.
+	*/
+	StringFromStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Reset the string builder, clearing its contents but keeping the allocated buffer.
+	*/
+	ResetStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+	) ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Free the resources used by the string builder.
+	*/
+	FreeStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+	) ---
+}
+
+// String Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+The possible primitive types that can be formatted.
+*/
+PrimitiveFmtType :: enum u8 {
+	B8 = 0,
+	F32 = 1,
+	F64 = 2,
+	U8 = 3,
+	U16 = 4,
+	U32 = 5,
+	U64 = 6,
+	I8 = 7,
+	I16 = 8,
+	I32 = 9,
+	I64 = 10,
+	Rune = 11,
+	CString = 12,
+	String = 13,
+}
+
+/*
+The internal encoding of a type-unspecific format specifier.
+For booleans, valueBufferA is 0 or 1.
+For floats, valueBufferA is the float value (reinterpret as relevant),
+    and valueBufferB is the number of decimal places (cast to i32).
+For integers, valueBufferA is the integer value (reinterpret as relevant),
+    and the first half of valueBufferB is the base (cast to PNSLR_IntegerBase).
+For runes, valueBufferA is the rune value (reinterpret as u32).
+For C-style strings, valueBufferA is the pointer to the string.
+For UTF-8 strings, valueBufferA is the pointer to the string,
+    and valueBufferB is the length (reinterpret as i64).
+*/
+PrimitiveFmtOptions :: struct  {
+	type: PrimitiveFmtType,
+	valueBufferA: u64,
+	valueBufferB: u64,
+}
+
+// declare []PrimitiveFmtOptions
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtB8 :: proc "c" (
+		value: b8,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtF32 :: proc "c" (
+		value: f32,
+		decimalPlaces: i32,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtF64 :: proc "c" (
+		value: f64,
+		decimalPlaces: i32,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtU8 :: proc "c" (
+		value: u8,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtU16 :: proc "c" (
+		value: u16,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtU32 :: proc "c" (
+		value: u32,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtU64 :: proc "c" (
+		value: u64,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtI8 :: proc "c" (
+		value: i8,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtI16 :: proc "c" (
+		value: i16,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtI32 :: proc "c" (
+		value: i32,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtI64 :: proc "c" (
+		value: i64,
+		base: IntegerBase = { },
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtRune :: proc "c" (
+		value: u32,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtCString :: proc "c" (
+		value: cstring,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Use when formatting a string. Pass as one of the varargs.
+	*/
+	FmtString :: proc "c" (
+		value: string,
+	) -> PrimitiveFmtOptions ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Format a string with the given format and arguments, appending the result
+	to the string builder.
+	*/
+	FormatAndAppendToStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+		fmtStr: string,
+		args: []PrimitiveFmtOptions,
+	) -> b8 ---
+}
+
+// Conversions to strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a boolean value to a string ("true" or "false").
+	*/
+	StringFromBoolean :: proc "c" (
+		value: b8,
+		allocator: Allocator,
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a 32-bit floating-point number to a string with specified decimal places.
+	*/
+	StringFromF32 :: proc "c" (
+		value: f32,
+		allocator: Allocator,
+		decimalPlaces: i32 = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a 64-bit floating-point number to a string with specified decimal places.
+	*/
+	StringFromF64 :: proc "c" (
+		value: f64,
+		allocator: Allocator,
+		decimalPlaces: i32 = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert an unsigned 8-bit integer to a string in the specified base.
+	*/
+	StringFromU8 :: proc "c" (
+		value: u8,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert an unsigned 16-bit integer to a string in the specified base.
+	*/
+	StringFromU16 :: proc "c" (
+		value: u16,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert an unsigned 32-bit integer to a string in the specified base.
+	*/
+	StringFromU32 :: proc "c" (
+		value: u32,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert an unsigned 64-bit integer to a string in the specified base.
+	*/
+	StringFromU64 :: proc "c" (
+		value: u64,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a signed 8-bit integer to a string in the specified base.
+	*/
+	StringFromI8 :: proc "c" (
+		value: i8,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a signed 16-bit integer to a string in the specified base.
+	*/
+	StringFromI16 :: proc "c" (
+		value: i16,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a signed 32-bit integer to a string in the specified base.
+	*/
+	StringFromI32 :: proc "c" (
+		value: i32,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a signed 64-bit integer to a string in the specified base.
+	*/
+	StringFromI64 :: proc "c" (
+		value: i64,
+		allocator: Allocator,
+		base: IntegerBase = { },
+	) -> string ---
+}
+
+// Conversions from strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a validstring (case-insensitive "true" or "false", or "1" or "0") to a boolean.
+	*/
+	BooleanFromString :: proc "c" (
+		str: string,
+		value: ^b8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers-only, with zero or one decimal points,
+	optional -/+ sign at the start) to a 32-bit floating-point number.
+	*/
+	F32FromString :: proc "c" (
+		str: string,
+		value: ^f32,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers-only, with zero or one decimal points,
+	optional -/+ sign at the start) to a 64-bit floating-point number.
+	*/
+	F64FromString :: proc "c" (
+		str: string,
+		value: ^f64,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optionally
+	starting with 0b/0o/0x prefix for alternate bases) to an unsigned 8-bit integer.
+	Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+	By default (no prefix), decimal base is assumed.
+	*/
+	U8FromString :: proc "c" (
+		str: string,
+		value: ^u8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optionally
+	starting with 0b/0o/0x prefix for alternate bases) to an unsigned 16-bit integer.
+	Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+	By default (no prefix), decimal base is assumed.
+	*/
+	U16FromString :: proc "c" (
+		str: string,
+		value: ^u16,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optionally
+	starting with 0b/0o/0x prefix for alternate bases) to an unsigned 32-bit integer.
+	Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+	By default (no prefix), decimal base is assumed.
+	*/
+	U32FromString :: proc "c" (
+		str: string,
+		value: ^u32,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optionally
+	starting with 0b/0o/0x prefix for alternate bases) to an unsigned 64-bit integer.
+	Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+	By default (no prefix), decimal base is assumed.
+	*/
+	U64FromString :: proc "c" (
+		str: string,
+		value: ^u64,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+	at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+	a signed 8-bit integer. Will be assumed to be hexadecimal if it contains A-F
+	characters but no prefix. By default (no prefix), decimal base is assumed.
+	*/
+	I8FromString :: proc "c" (
+		str: string,
+		value: ^i8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+	at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+	a signed 16-bit integer. Will be assumed to be hexadecimal if it contains A-F
+	characters but no prefix. By default (no prefix), decimal base is assumed.
+	*/
+	I16FromString :: proc "c" (
+		str: string,
+		value: ^i16,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+	at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+	a signed 32-bit integer. Will be assumed to be hexadecimal if it contains A-F
+	characters but no prefix. By default (no prefix), decimal base is assumed.
+	*/
+	I32FromString :: proc "c" (
+		str: string,
+		value: ^i32,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+	at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+	a signed 64-bit integer. Will be assumed to be hexadecimal if it contains A-F
+	characters but no prefix. By default (no prefix), decimal base is assumed.
+	*/
+	I64FromString :: proc "c" (
+		str: string,
+		value: ^i64,
+	) -> b8 ---
+}
+
 // #######################################################################################
 // IO
 // #######################################################################################
 
-/**
- * Represents a normalised path.
- * This is used to ensure that paths are in a consistent format across different platforms.
- * It is a simple wrapper around a UTF-8 string.
- * It's always an absolute path, and the path separators are always forward slashes ('/').
- * For directories, it always ends with a trailing slash.
- */
+/*
+Represents a normalised path.
+This is used to ensure that paths are in a consistent format across different platforms.
+It is a simple wrapper around a UTF-8 string.
+It's always an absolute path, and the path separators are always forward slashes ('/').
+For directories, it always ends with a trailing slash.
+*/
 Path :: struct  {
 	path: string,
 }
 
-/**
- * Represents the type of path normalisation to perform.
- */
+/*
+Represents the type of path normalisation to perform.
+*/
 PathNormalisationType :: enum u8 {
 	File = 0,
 	Directory = 1,
@@ -1315,9 +2033,9 @@ PathNormalisationType :: enum u8 {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Normalises a path to a consistent format, as specified in `PNSLR_PathNormalisationType`.
-     */
+	/*
+	Normalises a path to a consistent format, as specified in `PNSLR_PathNormalisationType`.
+	*/
 	NormalisePath :: proc "c" (
 		path: string,
 		type: PathNormalisationType,
@@ -1327,23 +2045,23 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Split a path into its components. Assumes that the path is a valid normalised path in Panshilar conventions.
-     */
+	/*
+	Split a path into its components. Assumes that the path is a valid normalised path in Panshilar conventions.
+	*/
 	SplitPath :: proc "c" (
 		path: Path,
 		parent: ^Path,
-		selfNameWithExtension: ^string,
-		selfName: ^string,
-		extension: ^string,
+		selfNameWithExtension: ^string = { },
+		selfName: ^string = { },
+		extension: ^string = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns a normalised path for a file inside a given directory.
-     */
+	/*
+	Returns a normalised path for a file inside a given directory.
+	*/
 	GetPathForChildFile :: proc "c" (
 		dir: Path,
 		fileNameWithExtension: string,
@@ -1353,9 +2071,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Returns a normalised path for a subdirectory inside a given directory.
-     */
+	/*
+	Returns a normalised path for a subdirectory inside a given directory.
+	*/
 	GetPathForSubdirectory :: proc "c" (
 		dir: Path,
 		dirName: string,
@@ -1363,9 +2081,9 @@ foreign {
 	) -> Path ---
 }
 
-/**
- * The signature of the delegate that's supposed to be called for iterating over a directory.
- */
+/*
+The signature of the delegate that's supposed to be called for iterating over a directory.
+*/
 DirectoryIterationVisitorDelegate :: #type proc "c" (
 	payload: rawptr,
 	path: Path,
@@ -1375,10 +2093,10 @@ DirectoryIterationVisitorDelegate :: #type proc "c" (
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Iterates over a directory and calls the visitor function for each file/directory found.
-     * If `recursive` is true, it will also iterate over subdirectories.
-     */
+	/*
+	Iterates over a directory and calls the visitor function for each file/directory found.
+	If `recursive` is true, it will also iterate over subdirectories.
+	*/
 	IterateDirectory :: proc "c" (
 		path: Path,
 		recursive: b8,
@@ -1387,9 +2105,9 @@ foreign {
 	) ---
 }
 
-/**
- * Represents the type of path check to perform when checking if a path exists.
- */
+/*
+Represents the type of path check to perform when checking if a path exists.
+*/
 PathExistsCheckType :: enum u8 {
 	Either = 0,
 	File = 1,
@@ -1398,9 +2116,9 @@ PathExistsCheckType :: enum u8 {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Checks if a file/directory exists at the specified path.
-     */
+	/*
+	Checks if a file/directory exists at the specified path.
+	*/
 	PathExists :: proc "c" (
 		path: Path,
 		type: PathExistsCheckType,
@@ -1409,9 +2127,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Deletes a file/directory at a path, if it exists.
-     */
+	/*
+	Deletes a file/directory at a path, if it exists.
+	*/
 	DeletePath :: proc "c" (
 		path: Path,
 	) -> b8 ---
@@ -1419,9 +2137,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Get the timestamp of a file at the specified path as nanoseconds since unix epoch.
-     */
+	/*
+	Get the timestamp of a file at the specified path as nanoseconds since unix epoch.
+	*/
 	GetFileTimestamp :: proc "c" (
 		path: Path,
 	) -> i64 ---
@@ -1429,9 +2147,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Gets the size of a file at the specified path in bytes.
-     */
+	/*
+	Gets the size of a file at the specified path in bytes.
+	*/
 	GetFileSize :: proc "c" (
 		path: Path,
 	) -> i64 ---
@@ -1439,53 +2157,54 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Creates a directory tree, if it doesn't exist.
-     * Note that if the path doesn't have a trailing slash, it'll assume it's a file.
-     * So, the last component of the path (if is a directory) will not be created.
-     */
+	/*
+	Creates a directory tree, if it doesn't exist.
+	Note that if the path doesn't have a trailing slash, it'll assume it's a file.
+	So, the last component of the path (if is a directory) will not be created.
+	*/
 	CreateDirectoryTree :: proc "c" (
 		path: Path,
 	) -> b8 ---
 }
 
-/**
- * Represents an opened file.
- */
+/*
+Represents an opened file.
+*/
 File :: struct  {
 	handle: rawptr,
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Opens a file for reading, optionally allow writing to the stream.
-     * If the file does not exist, this function will fail.
-     */
+	/*
+	Opens a file for reading, optionally allow writing to the stream.
+	If the file does not exist, this function will fail.
+	*/
 	OpenFileToRead :: proc "c" (
 		path: Path,
-		allowWrite: b8,
+		allowWrite: b8 = { },
 	) -> File ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Opens a file for writing (or appending), optionally allow reading from the stream.
-     * If the file does not exist, it will be created.
-     */
+	/*
+	Opens a file for writing (or appending), optionally allow reading from the stream.
+	If the file does not exist, it will be created.
+	*/
 	OpenFileToWrite :: proc "c" (
 		path: Path,
-		append: b8,
-		allowRead: b8,
+		append: b8 = { },
+		allowRead: b8 = { },
 	) -> File ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Gets the size of an opened file.
-     */
+	/*
+	Gets the size of an opened file.
+	Returns 0 on error.
+	*/
 	GetSizeOfFile :: proc "c" (
 		handle: File,
 	) -> i64 ---
@@ -1493,33 +2212,49 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Seeks to a specific position in an opened file.
-     * If not relative, it's absolute from the start.
-     */
+	/*
+	Gets the current position in an opened file.
+	Returns -1 on error.
+	*/
+	GetCurrentPositionInFile :: proc "c" (
+		handle: File,
+	) -> i64 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Seeks to a specific position in an opened file.
+	If not relative, it's absolute from the start.
+	Returns true on success, false on failure.
+	*/
 	SeekPositionInFile :: proc "c" (
 		handle: File,
 		newPos: i64,
-		relative: b8,
+		relative: b8 = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Reads data from an opened file at the current position.
-     */
+	/*
+	Reads data from an opened file at the current position.
+	Optionally stores the number of bytes read.
+	Returns true on success, false on failure.
+	*/
 	ReadFromFile :: proc "c" (
 		handle: File,
 		dst: []u8,
+		readSize: ^i64 = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Writes data to an opened file at the current position.
-     */
+	/*
+	Writes data to an opened file at the current position.
+	Returns true on success, false on failure.
+	*/
 	WriteToFile :: proc "c" (
 		handle: File,
 		src: []u8,
@@ -1528,9 +2263,24 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Truncates an opened file to a specific size.
-     */
+	/*
+	Formats a string with the given format and arguments, writing the
+	result to the file.
+	Returns true on success, false on failure.
+	*/
+	FormatAndWriteToFile :: proc "c" (
+		handle: File,
+		fmtStr: string,
+		args: []PrimitiveFmtOptions,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Truncates an opened file to a specific size.
+	Returns true on success, false on failure.
+	*/
 	TruncateFile :: proc "c" (
 		handle: File,
 		newSize: i64,
@@ -1539,9 +2289,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Flushes any buffered data to the file.
-     */
+	/*
+	Flushes any buffered data to the file.
+	Returns true on success, false on failure.
+	*/
 	FlushFile :: proc "c" (
 		handle: File,
 	) -> b8 ---
@@ -1549,9 +2300,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Closes an opened file.
-     */
+	/*
+	Closes an opened file.
+	*/
 	CloseFileHandle :: proc "c" (
 		handle: File,
 	) ---
@@ -1559,10 +2310,11 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Reads a file fully end-to-end and stores in a buffer. Won't work if dst is nil.
-     * Provided allocator is used for creating the buffer.
-     */
+	/*
+	Reads a file fully end-to-end and stores in a buffer. Won't work if dst is nil.
+	Provided allocator is used for creating the buffer.
+	Returns true on success, false on failure.
+	*/
 	ReadAllContentsFromFile :: proc "c" (
 		path: Path,
 		dst: ^[]u8,
@@ -1572,21 +2324,23 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Dump a bunch of data into a file. Optionally append it instead of overwriting.
-     */
+	/*
+	Dump a bunch of data into a file. Optionally append it instead of overwriting.
+	Returns true on success, false on failure.
+	*/
 	WriteAllContentsToFile :: proc "c" (
 		path: Path,
 		src: []u8,
-		append: b8,
+		append: b8 = { },
 	) -> b8 ---
 }
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Copies a file from src to dst. If dst exists, it will be overwritten.
-     */
+	/*
+	Copies a file from src to dst. If dst exists, it will be overwritten.
+	Returns true on success, false on failure.
+	*/
 	CopyFile :: proc "c" (
 		src: Path,
 		dst: Path,
@@ -1595,9 +2349,10 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Moves a file from src to dst. If dst exists, it will be overwritten.
-     */
+	/*
+	Moves a file from src to dst. If dst exists, it will be overwritten.
+	Returns true on success, false on failure.
+	*/
 	MoveFile :: proc "c" (
 		src: Path,
 		dst: Path,
@@ -1610,9 +2365,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Print a message to the standard output stream.
-     */
+	/*
+	Print a message to the standard output stream.
+	*/
 	PrintToStdOut :: proc "c" (
 		message: string,
 	) -> i32 ---
@@ -1624,9 +2379,9 @@ foreign {
 
 @(link_prefix="PNSLR_")
 foreign {
-    /**
-     * Exits the current process immediately with the specified exit code.
-     */
+	/*
+	Exits the current process immediately with the specified exit code.
+	*/
 	ExitProcess :: proc "c" (
 		exitCode: i32,
 	) ---
@@ -1636,21 +2391,21 @@ foreign {
 // Network
 // #######################################################################################
 
-/**
- * Represents an IP address in binary form.
- * For IPv4, it's 4 bytes. For IPv6, it's 16 bytes.
- */
+/*
+Represents an IP address in binary form.
+For IPv4, it's 4 bytes. For IPv6, it's 16 bytes.
+*/
 IPAddress :: []u8
 
-/**
- * Represents a subnet mask in binary form.
- * For IPv4, it's 4 bytes. For IPv6, it's 16 bytes.
- */
+/*
+Represents a subnet mask in binary form.
+For IPv4, it's 4 bytes. For IPv6, it's 16 bytes.
+*/
 IPMask :: []u8
 
-/**
- * Represents an IP network, consisting of an IP address and a subnet mask.
- */
+/*
+Represents an IP network, consisting of an IP address and a subnet mask.
+*/
 IPNetwork :: struct  {
 	address: IPAddress,
 	mask: IPMask,
@@ -1666,17 +2421,194 @@ foreign {
 	) -> b8 ---
 }
 
+// #######################################################################################
+// Stream
+// #######################################################################################
+
+// Stream Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+Defines the mode to be used when calling the stream function.
+*/
+StreamMode :: enum u8 {
+	GetSize = 0,
+	GetCurrentPos = 1,
+	SeekAbsolute = 2,
+	SeekRelative = 3,
+	Read = 4,
+	Write = 5,
+	Truncate = 6,
+	Flush = 7,
+	Close = 8,
+}
+
+/*
+Defines the delegate type for the stream function
+*/
+StreamProcedure :: #type proc "c" (
+	streamData: rawptr,
+	mode: StreamMode,
+	data: []u8,
+	offset: i64,
+	extraRet: ^i64,
+) -> b8
+
+/*
+Defines a generic stream, that can be used for reading/writing data.
+*/
+Stream :: struct  {
+	procedure: StreamProcedure,
+	data: rawptr,
+}
+
+// declare []Stream
+
+// Stream ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Gets the size of the stream.
+	Returns 0 on error.
+	*/
+	GetSizeOfStream :: proc "c" (
+		stream: Stream,
+	) -> i64 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Gets the current position in the stream.
+	Returns -1 on error.
+	*/
+	GetCurrentPositionInStream :: proc "c" (
+		stream: Stream,
+	) -> i64 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Seeks to a new position in the stream.
+	If 'relative' is true, the new position is relative to the current position.
+	If 'relative' is false, the new position is absolute from the start.
+	Returns true on success, false on failure.
+	*/
+	SeekPositionInStream :: proc "c" (
+		stream: Stream,
+		newPos: i64 = { },
+		relative: b8 = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Reads data from the stream into the provided buffer.
+	Optionally stores the number of bytes read.
+	Returns true on success, false on failure.
+	*/
+	ReadFromStream :: proc "c" (
+		stream: Stream,
+		dst: []u8,
+		readSize: ^i64 = { },
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Writes data from the provided buffer into the stream.
+	Returns true on success, false on failure.
+	*/
+	WriteToStream :: proc "c" (
+		stream: Stream,
+		src: []u8,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Formats a string and writes it to the stream.
+	Only supports primitives, for obvious reasons.
+	Use with `PNSLR_FmtB8`, `PNSLR_FmtI32`, etc.
+	Returns true on success, false on failure.
+	*/
+	FormatAndWriteToStream :: proc "c" (
+		stream: Stream,
+		fmtStr: string,
+		args: []PrimitiveFmtOptions,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Truncates the stream to the specified size.
+	Returns true on success, false on failure.
+	*/
+	TruncateStream :: proc "c" (
+		stream: Stream,
+		newSize: i64,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Flushes any buffered data to the stream.
+	Returns true on success, false on failure.
+	*/
+	FlushStream :: proc "c" (
+		stream: Stream,
+	) -> b8 ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Closes the stream and frees any associated resources.
+	*/
+	CloseStream :: proc "c" (
+		stream: Stream,
+	) ---
+}
+
+// Stream casts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Creates a stream from a file handle.
+	*/
+	StreamFromFile :: proc "c" (
+		file: File,
+	) -> Stream ---
+}
+
+@(link_prefix="PNSLR_")
+foreign {
+	/*
+	Creates a stream from a string builder.
+	*/
+	StreamFromStringBuilder :: proc "c" (
+		builder: ^StringBuilder,
+	) -> Stream ---
+}
+
 #assert(size_of(int)  == 8, " int must be 8 bytes")
 #assert(size_of(uint) == 8, "uint must be 8 bytes")
 
 GET_LOC :: proc(loc := #caller_location) -> SourceCodeLocation {return {file = loc.file_path, line = loc.line, column = loc.column, function = loc.procedure}}
 
-New :: proc($T: typeid, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError) -> ^T {return (^T)(Allocate(allocator, true, size_of(T), align_of(T), loc, err))}
+New :: proc($T: typeid, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError = { }) -> ^T {return (^T)(Allocate(allocator, true, size_of(T), align_of(T), loc, err))}
 
-Delete :: proc(obj: ^$T, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError) {if obj != nil {Free(allocator, obj, loc, err)}}
+Delete :: proc(obj: ^$T, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError = { }) {if obj != nil {Free(allocator, obj, loc, err)}}
 
-MakeSlice :: proc($T: typeid/[]$E, count: i64, zeroed: b8, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError) -> T {return transmute(T)MakeRawSlice(size_of(E), align_of(E), count, zeroed, allocator, loc, err)}
+MakeSlice :: proc($T: typeid/[]$E, count: i64, zeroed: b8, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError = { }) -> T {return transmute(T)MakeRawSlice(size_of(E), align_of(E), count, zeroed, allocator, loc, err)}
 
-FreeSlice :: proc(slice: ^[]$T, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError) {if slice != nil {FreeRawSlice(transmute(^RawArraySlice) slice, allocator, loc, err)}}
+FreeSlice :: proc(slice: ^[]$T, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError = { }) {if slice != nil {FreeRawSlice(transmute(^RawArraySlice) slice, allocator, loc, err)}}
 
-ResizeSlice :: proc(slice: ^[]$T, newCount: i64, zeroed: b8, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError) {if slice != nil {ResizeRawSlice(transmute(^RawArraySlice) slice, size_of(T), align_of(T), newCount, zeroed, allocator, loc, err)}}
+ResizeSlice :: proc(slice: ^[]$T, newCount: i64, zeroed: b8, allocator: Allocator, loc: SourceCodeLocation, err: ^AllocatorError = { }) {if slice != nil {ResizeRawSlice(transmute(^RawArraySlice) slice, size_of(T), align_of(T), newCount, zeroed, allocator, loc, err)}}

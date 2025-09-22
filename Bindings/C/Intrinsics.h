@@ -81,50 +81,6 @@ typedef PNSLR_ArraySlice(u8) utf8str;
 
 PNSLR_DECLARE_ARRAY_SLICE(utf8str);
 
-// #######################################################################################
-// Collections
-// #######################################################################################
-
-/**
- * A raw type-unspecific array slice.
- */
-typedef struct PNSLR_RawArraySlice
-{
-    rawptr data;
-    i64 count;
-} PNSLR_RawArraySlice;
-
-PNSLR_DECLARE_ARRAY_SLICE(b8);
-
-PNSLR_DECLARE_ARRAY_SLICE(u8);
-
-PNSLR_DECLARE_ARRAY_SLICE(u16);
-
-PNSLR_DECLARE_ARRAY_SLICE(u32);
-
-PNSLR_DECLARE_ARRAY_SLICE(u64);
-
-PNSLR_DECLARE_ARRAY_SLICE(i8);
-
-PNSLR_DECLARE_ARRAY_SLICE(i16);
-
-PNSLR_DECLARE_ARRAY_SLICE(i32);
-
-PNSLR_DECLARE_ARRAY_SLICE(i64);
-
-PNSLR_DECLARE_ARRAY_SLICE(f32);
-
-PNSLR_DECLARE_ARRAY_SLICE(f64);
-
-PNSLR_DECLARE_ARRAY_SLICE(char);
-
-/**
- * UTF-8 string type, with length info (not necessarily null-terminated).
- */
-typedef PNSLR_ArraySlice(u8) utf8str;
-
-PNSLR_DECLARE_ARRAY_SLICE(utf8str);
-
 #undef PNSLR_ALIGNAS
 
 #ifdef __cplusplus

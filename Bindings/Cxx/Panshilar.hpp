@@ -114,7 +114,7 @@ namespace Panshilar
         Mutex* mutex
     );
 
-    // Read-Write ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Read-Write Mutex ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * A read-write mutex.
@@ -239,7 +239,7 @@ namespace Panshilar
         i32 count
     );
 
-    // Condition ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Condition Variable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * A condition variable for signaling between threads.
@@ -335,7 +335,7 @@ namespace Panshilar
     // Allocators
     // #######################################################################################
 
-    // Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Allocator Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Defines the mode to be used when calling the allocator function.
@@ -407,7 +407,7 @@ namespace Panshilar
        rawptr data;
     };
 
-    // Allocation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Allocation ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Allocate memory using the provided allocator.
@@ -418,7 +418,7 @@ namespace Panshilar
         i32 size,
         i32 alignment,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -432,7 +432,7 @@ namespace Panshilar
         i32 newSize,
         i32 alignment,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -446,7 +446,7 @@ namespace Panshilar
         i32 newSize,
         i32 alignment,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -456,7 +456,7 @@ namespace Panshilar
         Allocator allocator,
         rawptr memory,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -465,7 +465,7 @@ namespace Panshilar
     void FreeAll(
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -474,10 +474,10 @@ namespace Panshilar
     u64 QueryAllocatorCapabilities(
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
-    // Nil ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Nil allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Get the 'nil' allocator. Reports 'out of memory' when requesting memory.
@@ -485,7 +485,7 @@ namespace Panshilar
      */
     Allocator GetAllocator_Nil();
 
-    // Default ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Default Heap Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Get the default heap allocator.
@@ -506,7 +506,7 @@ namespace Panshilar
         AllocatorError* error
     );
 
-    // Arena ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Arena Alloator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * A block of memory used by the arena allocator.
@@ -543,7 +543,7 @@ namespace Panshilar
         Allocator backingAllocator,
         u32 pageSize,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -553,7 +553,7 @@ namespace Panshilar
     void DestroyAllocator_Arena(
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -623,7 +623,7 @@ namespace Panshilar
         ArenaAllocatorSnapshot* snapshot
     );
 
-    // Stack ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Stack Allocator ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * A page of a stack allocator.
@@ -668,7 +668,7 @@ namespace Panshilar
     Allocator NewAllocator_Stack(
         Allocator backingAllocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -678,7 +678,7 @@ namespace Panshilar
     void DestroyAllocator_Stack(
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -695,7 +695,7 @@ namespace Panshilar
         AllocatorError* error
     );
 
-    // Collections ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Collections make/free functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Allocate a raw array slice of 'count' elements, each of size 'tySize' and alignment 'tyAlign', using the provided allocator. Optionally zeroed.
@@ -707,7 +707,7 @@ namespace Panshilar
         b8 zeroed,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -717,7 +717,7 @@ namespace Panshilar
         RawArraySlice* slice,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -731,7 +731,7 @@ namespace Panshilar
         b8 zeroed,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -742,7 +742,7 @@ namespace Panshilar
         b8 zeroed,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -752,7 +752,7 @@ namespace Panshilar
         utf8str str,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -763,7 +763,7 @@ namespace Panshilar
         b8 zeroed,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     /**
@@ -773,7 +773,7 @@ namespace Panshilar
         cstring str,
         Allocator allocator,
         SourceCodeLocation location,
-        AllocatorError* error
+        AllocatorError* error = { }
     );
 
     // #######################################################################################
@@ -873,7 +873,7 @@ namespace Panshilar
     b8 AreStringsEqual(
         utf8str str1,
         utf8str str2,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -883,7 +883,7 @@ namespace Panshilar
     b8 AreStringAndCStringEqual(
         utf8str str1,
         cstring str2,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -893,7 +893,7 @@ namespace Panshilar
     b8 AreCStringsEqual(
         cstring str1,
         cstring str2,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -903,7 +903,7 @@ namespace Panshilar
     b8 StringStartsWith(
         utf8str str,
         utf8str prefix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -913,7 +913,7 @@ namespace Panshilar
     b8 StringEndsWith(
         utf8str str,
         utf8str suffix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -922,7 +922,7 @@ namespace Panshilar
     b8 StringStartsWithCString(
         utf8str str,
         cstring prefix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -931,7 +931,7 @@ namespace Panshilar
     b8 StringEndsWithCString(
         utf8str str,
         cstring suffix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -940,7 +940,7 @@ namespace Panshilar
     b8 CStringStartsWith(
         cstring str,
         utf8str prefix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -949,7 +949,7 @@ namespace Panshilar
     b8 CStringEndsWith(
         cstring str,
         utf8str suffix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -958,7 +958,7 @@ namespace Panshilar
     b8 CStringStartsWithCString(
         utf8str str,
         cstring prefix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -967,10 +967,10 @@ namespace Panshilar
     b8 CStringEndsWithCString(
         utf8str str,
         cstring suffix,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
-    // Advanced ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Advanced comparisons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Searches for the first occurrence of a substring within a string.
@@ -979,7 +979,7 @@ namespace Panshilar
     i32 SearchFirstIndexInString(
         utf8str str,
         utf8str substring,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -989,7 +989,7 @@ namespace Panshilar
     i32 SearchLastIndexInString(
         utf8str str,
         utf8str substring,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
     /**
@@ -1001,10 +1001,10 @@ namespace Panshilar
         utf8str oldValue,
         utf8str newValue,
         Allocator allocator,
-        StringComparisonType comparisonType
+        StringComparisonType comparisonType = { }
     );
 
-    // UTF-8 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTF-8 functionalities ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Result structure for UTF-8 rune encoding.
@@ -1049,7 +1049,7 @@ namespace Panshilar
         ArraySlice<u8> s
     );
 
-    // Windows-specific ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Windows-specific bs for UTF-16 conversions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * Converts a UTF-8 string to a UTF-16 string.
@@ -1069,6 +1069,561 @@ namespace Panshilar
     utf8str UTF8FromUTF16WindowsOnly(
         ArraySlice<u16> utf16str,
         Allocator allocator
+    );
+
+    // String Builder ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * A basic string builder. Can accept strings and characters,
+     * and build a single string from them.
+     *
+     * Create by setting the allocator and zeroing the rest of the fields.
+     */
+    struct StringBuilder
+    {
+       Allocator allocator;
+       ArraySlice<u8> buffer;
+       i64 writtenSize;
+       i64 cursorPos;
+    };
+
+    /**
+     * Append a single byte to the string builder. Could be an ANSI/ASCII character,
+     * or not. The function does not check for validity.
+     */
+    b8 AppendByteToStringBuilder(
+        StringBuilder* builder,
+        u8 byte
+    );
+
+    /**
+     * Append a UTF-8 string to the string builder.
+     */
+    b8 AppendStringToStringBuilder(
+        StringBuilder* builder,
+        utf8str str
+    );
+
+    /**
+     * Append a C-style null-terminated string to the string builder.
+     */
+    b8 AppendCStringToStringBuilder(
+        StringBuilder* builder,
+        cstring str
+    );
+
+    /**
+     * Append a single character (rune) to the string builder.
+     */
+    b8 AppendRuneToStringBuilder(
+        StringBuilder* builder,
+        u32 rune
+    );
+
+    /**
+     * Append an 8-bit boolean value to the string builder.
+     */
+    b8 AppendB8ToStringBuilder(
+        StringBuilder* builder,
+        b8 value
+    );
+
+    /**
+     * Append a 32-bit floating-point number to the string builder.
+     */
+    b8 AppendF32ToStringBuilder(
+        StringBuilder* builder,
+        f32 value,
+        i32 decimalPlaces
+    );
+
+    /**
+     * Append a 64-bit floating point number to the string builder.
+     */
+    b8 AppendF64ToStringBuilder(
+        StringBuilder* builder,
+        f64 value,
+        i32 decimalPlaces
+    );
+
+    /**
+     * The base to use when appending integer numbers to the string builder.
+     */
+    enum class IntegerBase : u8 /* use as value */
+    {
+        Decimal = 0,
+        Binary = 1,
+        HexaDecimal = 2,
+        Octal = 3,
+    };
+
+    /**
+     * Append an unsigned 8-bit integer to the string builder.
+     */
+    b8 AppendU8ToStringBuilder(
+        StringBuilder* builder,
+        u8 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append an unsigned 16-bit integer to the string builder.
+     */
+    b8 AppendU16ToStringBuilder(
+        StringBuilder* builder,
+        u16 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append an unsigned 32-bit integer number to the string builder.
+     */
+    b8 AppendU32ToStringBuilder(
+        StringBuilder* builder,
+        u32 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append an unsigned 64-bit integer to the string builder.
+     */
+    b8 AppendU64ToStringBuilder(
+        StringBuilder* builder,
+        u64 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append a signed 8-bit integer to the string builder.
+     */
+    b8 AppendI8ToStringBuilder(
+        StringBuilder* builder,
+        i8 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append a signed 16-bit integer to the string builder.
+     */
+    b8 AppendI16ToStringBuilder(
+        StringBuilder* builder,
+        i16 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append a signed 32-bit integer number to the string builder.
+     */
+    b8 AppendI32ToStringBuilder(
+        StringBuilder* builder,
+        i32 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Append a signed 64-bit integer to the string builder.
+     */
+    b8 AppendI64ToStringBuilder(
+        StringBuilder* builder,
+        i64 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Return the string from the string builder.
+     */
+    utf8str StringFromStringBuilder(
+        StringBuilder* builder
+    );
+
+    /**
+     * Reset the string builder, clearing its contents but keeping the allocated buffer.
+     */
+    void ResetStringBuilder(
+        StringBuilder* builder
+    );
+
+    /**
+     * Free the resources used by the string builder.
+     */
+    void FreeStringBuilder(
+        StringBuilder* builder
+    );
+
+    // String Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * The possible primitive types that can be formatted.
+     */
+    enum class PrimitiveFmtType : u8 /* use as value */
+    {
+        B8 = 0,
+        F32 = 1,
+        F64 = 2,
+        U8 = 3,
+        U16 = 4,
+        U32 = 5,
+        U64 = 6,
+        I8 = 7,
+        I16 = 8,
+        I32 = 9,
+        I64 = 10,
+        Rune = 11,
+        CString = 12,
+        String = 13,
+    };
+
+    /**
+     * The internal encoding of a type-unspecific format specifier.
+     * For booleans, valueBufferA is 0 or 1.
+     * For floats, valueBufferA is the float value (reinterpret as relevant),
+     *     and valueBufferB is the number of decimal places (cast to i32).
+     * For integers, valueBufferA is the integer value (reinterpret as relevant),
+     *     and the first half of valueBufferB is the base (cast to PNSLR_IntegerBase).
+     * For runes, valueBufferA is the rune value (reinterpret as u32).
+     * For C-style strings, valueBufferA is the pointer to the string.
+     * For UTF-8 strings, valueBufferA is the pointer to the string,
+     *     and valueBufferB is the length (reinterpret as i64).
+     */
+    struct PrimitiveFmtOptions
+    {
+       PrimitiveFmtType type;
+       u64 valueBufferA;
+       u64 valueBufferB;
+    };
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtB8(
+        b8 value
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtF32(
+        f32 value,
+        i32 decimalPlaces
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtF64(
+        f64 value,
+        i32 decimalPlaces
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtU8(
+        u8 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtU16(
+        u16 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtU32(
+        u32 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtU64(
+        u64 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtI8(
+        i8 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtI16(
+        i16 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtI32(
+        i32 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtI64(
+        i64 value,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtRune(
+        u32 value
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtCString(
+        cstring value
+    );
+
+    /**
+     * Use when formatting a string. Pass as one of the varargs.
+     */
+    PrimitiveFmtOptions FmtString(
+        utf8str value
+    );
+
+    /**
+     * Format a string with the given format and arguments, appending the result
+     * to the string builder.
+     */
+    b8 FormatAndAppendToStringBuilder(
+        StringBuilder* builder,
+        utf8str fmtStr,
+        ArraySlice<PrimitiveFmtOptions> args
+    );
+
+    // Conversions to strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Convert a boolean value to a string ("true" or "false").
+     */
+    utf8str StringFromBoolean(
+        b8 value,
+        Allocator allocator
+    );
+
+    /**
+     * Convert a 32-bit floating-point number to a string with specified decimal places.
+     */
+    utf8str StringFromF32(
+        f32 value,
+        Allocator allocator,
+        i32 decimalPlaces = { }
+    );
+
+    /**
+     * Convert a 64-bit floating-point number to a string with specified decimal places.
+     */
+    utf8str StringFromF64(
+        f64 value,
+        Allocator allocator,
+        i32 decimalPlaces = { }
+    );
+
+    /**
+     * Convert an unsigned 8-bit integer to a string in the specified base.
+     */
+    utf8str StringFromU8(
+        u8 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert an unsigned 16-bit integer to a string in the specified base.
+     */
+    utf8str StringFromU16(
+        u16 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert an unsigned 32-bit integer to a string in the specified base.
+     */
+    utf8str StringFromU32(
+        u32 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert an unsigned 64-bit integer to a string in the specified base.
+     */
+    utf8str StringFromU64(
+        u64 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert a signed 8-bit integer to a string in the specified base.
+     */
+    utf8str StringFromI8(
+        i8 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert a signed 16-bit integer to a string in the specified base.
+     */
+    utf8str StringFromI16(
+        i16 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert a signed 32-bit integer to a string in the specified base.
+     */
+    utf8str StringFromI32(
+        i32 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    /**
+     * Convert a signed 64-bit integer to a string in the specified base.
+     */
+    utf8str StringFromI64(
+        i64 value,
+        Allocator allocator,
+        IntegerBase base = { }
+    );
+
+    // Conversions from strings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Convert a validstring (case-insensitive "true" or "false", or "1" or "0") to a boolean.
+     */
+    b8 BooleanFromString(
+        utf8str str,
+        b8* value
+    );
+
+    /**
+     * Convert a valid string (numbers-only, with zero or one decimal points,
+     * optional -/+ sign at the start) to a 32-bit floating-point number.
+     */
+    b8 F32FromString(
+        utf8str str,
+        f32* value
+    );
+
+    /**
+     * Convert a valid string (numbers-only, with zero or one decimal points,
+     * optional -/+ sign at the start) to a 64-bit floating-point number.
+     */
+    b8 F64FromString(
+        utf8str str,
+        f64* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+     * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 8-bit integer.
+     * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+     * By default (no prefix), decimal base is assumed.
+     */
+    b8 U8FromString(
+        utf8str str,
+        u8* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+     * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 16-bit integer.
+     * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+     * By default (no prefix), decimal base is assumed.
+     */
+    b8 U16FromString(
+        utf8str str,
+        u16* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+     * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 32-bit integer.
+     * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+     * By default (no prefix), decimal base is assumed.
+     */
+    b8 U32FromString(
+        utf8str str,
+        u32* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optionally
+     * starting with 0b/0o/0x prefix for alternate bases) to an unsigned 64-bit integer.
+     * Will be assumed to be hexadecimal if it contains A-F characters but no prefix.
+     * By default (no prefix), decimal base is assumed.
+     */
+    b8 U64FromString(
+        utf8str str,
+        u64* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+     * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+     * a signed 8-bit integer. Will be assumed to be hexadecimal if it contains A-F
+     * characters but no prefix. By default (no prefix), decimal base is assumed.
+     */
+    b8 I8FromString(
+        utf8str str,
+        i8* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+     * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+     * a signed 16-bit integer. Will be assumed to be hexadecimal if it contains A-F
+     * characters but no prefix. By default (no prefix), decimal base is assumed.
+     */
+    b8 I16FromString(
+        utf8str str,
+        i16* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+     * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+     * a signed 32-bit integer. Will be assumed to be hexadecimal if it contains A-F
+     * characters but no prefix. By default (no prefix), decimal base is assumed.
+     */
+    b8 I32FromString(
+        utf8str str,
+        i32* value
+    );
+
+    /**
+     * Convert a valid string (numbers/A-F only, case-insensitive, optional -/+ sign
+     * at the start, optionally starting with 0b/0o/0x prefix for alternate bases) to
+     * a signed 64-bit integer. Will be assumed to be hexadecimal if it contains A-F
+     * characters but no prefix. By default (no prefix), decimal base is assumed.
+     */
+    b8 I64FromString(
+        utf8str str,
+        i64* value
     );
 
     // #######################################################################################
@@ -1111,9 +1666,9 @@ namespace Panshilar
     b8 SplitPath(
         Path path,
         Path* parent,
-        utf8str* selfNameWithExtension,
-        utf8str* selfName,
-        utf8str* extension
+        utf8str* selfNameWithExtension = { },
+        utf8str* selfName = { },
+        utf8str* extension = { }
     );
 
     /**
@@ -1217,7 +1772,7 @@ namespace Panshilar
      */
     File OpenFileToRead(
         Path path,
-        b8 allowWrite
+        b8 allowWrite = { }
     );
 
     /**
@@ -1226,37 +1781,51 @@ namespace Panshilar
      */
     File OpenFileToWrite(
         Path path,
-        b8 append,
-        b8 allowRead
+        b8 append = { },
+        b8 allowRead = { }
     );
 
     /**
      * Gets the size of an opened file.
+     * Returns 0 on error.
      */
     i64 GetSizeOfFile(
         File handle
     );
 
     /**
+     * Gets the current position in an opened file.
+     * Returns -1 on error.
+     */
+    i64 GetCurrentPositionInFile(
+        File handle
+    );
+
+    /**
      * Seeks to a specific position in an opened file.
      * If not relative, it's absolute from the start.
+     * Returns true on success, false on failure.
      */
     b8 SeekPositionInFile(
         File handle,
         i64 newPos,
-        b8 relative
+        b8 relative = { }
     );
 
     /**
      * Reads data from an opened file at the current position.
+     * Optionally stores the number of bytes read.
+     * Returns true on success, false on failure.
      */
     b8 ReadFromFile(
         File handle,
-        ArraySlice<u8> dst
+        ArraySlice<u8> dst,
+        i64* readSize = { }
     );
 
     /**
      * Writes data to an opened file at the current position.
+     * Returns true on success, false on failure.
      */
     b8 WriteToFile(
         File handle,
@@ -1264,7 +1833,19 @@ namespace Panshilar
     );
 
     /**
+     * Formats a string with the given format and arguments, writing the
+     * result to the file.
+     * Returns true on success, false on failure.
+     */
+    b8 FormatAndWriteToFile(
+        File handle,
+        utf8str fmtStr,
+        ArraySlice<PrimitiveFmtOptions> args
+    );
+
+    /**
      * Truncates an opened file to a specific size.
+     * Returns true on success, false on failure.
      */
     b8 TruncateFile(
         File handle,
@@ -1273,6 +1854,7 @@ namespace Panshilar
 
     /**
      * Flushes any buffered data to the file.
+     * Returns true on success, false on failure.
      */
     b8 FlushFile(
         File handle
@@ -1288,6 +1870,7 @@ namespace Panshilar
     /**
      * Reads a file fully end-to-end and stores in a buffer. Won't work if dst is nil.
      * Provided allocator is used for creating the buffer.
+     * Returns true on success, false on failure.
      */
     b8 ReadAllContentsFromFile(
         Path path,
@@ -1297,15 +1880,17 @@ namespace Panshilar
 
     /**
      * Dump a bunch of data into a file. Optionally append it instead of overwriting.
+     * Returns true on success, false on failure.
      */
     b8 WriteAllContentsToFile(
         Path path,
         ArraySlice<u8> src,
-        b8 append
+        b8 append = { }
     );
 
     /**
      * Copies a file from src to dst. If dst exists, it will be overwritten.
+     * Returns true on success, false on failure.
      */
     b8 CopyFile(
         Path src,
@@ -1314,6 +1899,7 @@ namespace Panshilar
 
     /**
      * Moves a file from src to dst. If dst exists, it will be overwritten.
+     * Returns true on success, false on failure.
      */
     b8 MoveFile(
         Path src,
@@ -1372,18 +1958,162 @@ namespace Panshilar
         Allocator allocator
     );
 
+    // #######################################################################################
+    // Stream
+    // #######################################################################################
+
+    // Stream Declaration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Defines the mode to be used when calling the stream function.
+     */
+    enum class StreamMode : u8 /* use as value */
+    {
+        GetSize = 0,
+        GetCurrentPos = 1,
+        SeekAbsolute = 2,
+        SeekRelative = 3,
+        Read = 4,
+        Write = 5,
+        Truncate = 6,
+        Flush = 7,
+        Close = 8,
+    };
+
+    /**
+     * Defines the delegate type for the stream function
+     */
+    typedef b8 (*StreamProcedure)(
+        rawptr streamData,
+        StreamMode mode,
+        ArraySlice<u8> data,
+        i64 offset,
+        i64* extraRet
+    );
+
+    /**
+     * Defines a generic stream, that can be used for reading/writing data.
+     */
+    struct Stream
+    {
+       StreamProcedure procedure;
+       rawptr data;
+    };
+
+    // Stream ease-of-use functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Gets the size of the stream.
+     * Returns 0 on error.
+     */
+    i64 GetSizeOfStream(
+        Stream stream
+    );
+
+    /**
+     * Gets the current position in the stream.
+     * Returns -1 on error.
+     */
+    i64 GetCurrentPositionInStream(
+        Stream stream
+    );
+
+    /**
+     * Seeks to a new position in the stream.
+     * If 'relative' is true, the new position is relative to the current position.
+     * If 'relative' is false, the new position is absolute from the start.
+     * Returns true on success, false on failure.
+     */
+    b8 SeekPositionInStream(
+        Stream stream,
+        i64 newPos = { },
+        b8 relative = { }
+    );
+
+    /**
+     * Reads data from the stream into the provided buffer.
+     * Optionally stores the number of bytes read.
+     * Returns true on success, false on failure.
+     */
+    b8 ReadFromStream(
+        Stream stream,
+        ArraySlice<u8> dst,
+        i64* readSize = { }
+    );
+
+    /**
+     * Writes data from the provided buffer into the stream.
+     * Returns true on success, false on failure.
+     */
+    b8 WriteToStream(
+        Stream stream,
+        ArraySlice<u8> src
+    );
+
+    /**
+     * Formats a string and writes it to the stream.
+     * Only supports primitives, for obvious reasons.
+     * Use with `PNSLR_FmtB8`, `PNSLR_FmtI32`, etc.
+     * Returns true on success, false on failure.
+     */
+    b8 FormatAndWriteToStream(
+        Stream stream,
+        utf8str fmtStr,
+        ArraySlice<PrimitiveFmtOptions> args
+    );
+
+    /**
+     * Truncates the stream to the specified size.
+     * Returns true on success, false on failure.
+     */
+    b8 TruncateStream(
+        Stream stream,
+        i64 newSize
+    );
+
+    /**
+     * Flushes any buffered data to the stream.
+     * Returns true on success, false on failure.
+     */
+    b8 FlushStream(
+        Stream stream
+    );
+
+    /**
+     * Closes the stream and frees any associated resources.
+     */
+    void CloseStream(
+        Stream stream
+    );
+
+    // Stream casts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Creates a stream from a file handle.
+     */
+    Stream StreamFromFile(
+        File file
+    );
+
+    /**
+     * Creates a stream from a string builder.
+     */
+    Stream StreamFromStringBuilder(
+        StringBuilder* builder
+    );
+
 } // namespace end
 
 namespace Panshilar
 {
     /** Create a utf8str from a string literal. */
-    template <u64 N> constexpr utf8str STRING_LITERAL(const char (&str)[N]) { utf8str output; output.count = (i64) (N - 1); output.data = (u8*) str; return output; }
+    template <u64 N> constexpr utf8str StringLiteral(const char (&str)[N]) { utf8str output; output.count = (i64) (N - 1); output.data = (u8*) str; return output; }
 
     /** Get the current source code location. */
-    #define PNSLR_GET_LOC() Panshilar::SourceCodeLocation{Panshilar::STRING_LITERAL(__FILE__), __LINE__, 0, Panshilar::STRING_LITERAL(__FUNCTION__)}
+    #define PNSLR_GET_LOC() Panshilar::SourceCodeLocation{Panshilar::StringLiteral(__FILE__), __LINE__, 0, Panshilar::StringLiteral(__FUNCTION__)}
 
     /** Allocate an object of type 'ty' using the provided allocator. */
-    template <typename T> T* New(Allocator allocator, SourceCodeLocation loc, AllocatorError* err)
+    template <typename T> T* New(Allocator allocator, SourceCodeLocation loc, AllocatorError* err = { })
     {
         return (T*) Allocate(allocator, true, (i32) sizeof(T), (i32) alignof(T), loc, err);
     }
@@ -1395,27 +2125,34 @@ namespace Panshilar
     }
 
     /** Allocate an array of 'count__' elements of type 'ty' using the provided allocator. Optionally zeroed. */
-    template <typename T> ArraySlice<T> MakeSlice(i64 count, b8 zeroed, Allocator allocator, SourceCodeLocation loc, AllocatorError* err)
+    template <typename T> ArraySlice<T> MakeSlice(i64 count, b8 zeroed, Allocator allocator, SourceCodeLocation loc, AllocatorError* err = { })
     {
         RawArraySlice raw = MakeRawSlice((i32) sizeof(T), (i32) alignof(T), count, zeroed, allocator, loc, err);
         return *reinterpret_cast<ArraySlice<T>*>(&raw);
     }
 
     /** Free a 'slice' allocated with `PNSLR_MakeSlice`, using the provided allocator. Expects a reassignable variable. */
-    template <typename T> void FreeSlice(ArraySlice<T>* slice, Allocator allocator, SourceCodeLocation loc, AllocatorError* err)
+    template <typename T> void FreeSlice(ArraySlice<T>* slice, Allocator allocator, SourceCodeLocation loc, AllocatorError* err = { })
     {
         if (slice) FreeRawSlice(reinterpret_cast<RawArraySlice*>(slice), allocator, loc, err);
     }
 
     /** Resize a slice to one with 'newCount__' elements of type 'ty' using the provided allocator. Optionally zeroed. Expects a reassignable variable. */
-    template <typename T> void ResizeSlice(ArraySlice<T>* slice, i64 newCount, b8 zeroed, Allocator allocator, SourceCodeLocation loc, AllocatorError* err)
+    template <typename T> void ResizeSlice(ArraySlice<T>* slice, i64 newCount, b8 zeroed, Allocator allocator, SourceCodeLocation loc, AllocatorError* err = { })
     {
         if (slice) ResizeRawSlice(reinterpret_cast<RawArraySlice*>(slice), (i32) sizeof(T), (i32) alignof(T), newCount, zeroed, allocator, loc, err);
     }
+
+    /** Easier way to pass format arguments. */
+    #define PNSLR_FmtArgs(...) (PNSLR_ArraySlice(PNSLR_PrimitiveFmtOptions)) \
+        { \
+            .data = (PNSLR_PrimitiveFmtOptions[]){__VA_ARGS__}, \
+            .count = sizeof((PNSLR_PrimitiveFmtOptions[]){__VA_ARGS__})/sizeof(PNSLR_PrimitiveFmtOptions) \
+        }
 }
 
 #ifdef PNSLR_INTRINSICS_CXX_MAIN_H
-    b8 utf8str::operator==(const utf8str& other) const { return Panshilar::AreStringsEqual(*this, other, Panshilar::StringComparisonType::CaseSensitive); }
+    b8 utf8str::operator==(const utf8str& other) const { return Panshilar::AreStringsEqual(*this, other); }
     b8 utf8str::operator!=(const utf8str& other) const { return !(*this == other); }
 #endif
 
@@ -2218,6 +2955,396 @@ utf8str Panshilar::UTF8FromUTF16WindowsOnly(ArraySlice<u16> utf16str, Panshilar:
     PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_UTF8FromUTF16WindowsOnly(PNSLR_Bindings_Convert(utf16str), PNSLR_Bindings_Convert(allocator)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
+struct PNSLR_StringBuilder
+{
+   PNSLR_Allocator allocator;
+   PNSLR_ArraySlice_u8 buffer;
+   i64 writtenSize;
+   i64 cursorPos;
+};
+static_assert(sizeof(PNSLR_StringBuilder) == sizeof(Panshilar::StringBuilder), "size mismatch");
+static_assert(alignof(PNSLR_StringBuilder) == alignof(Panshilar::StringBuilder), "align mismatch");
+PNSLR_StringBuilder* PNSLR_Bindings_Convert(Panshilar::StringBuilder* x) { return reinterpret_cast<PNSLR_StringBuilder*>(x); }
+Panshilar::StringBuilder* PNSLR_Bindings_Convert(PNSLR_StringBuilder* x) { return reinterpret_cast<Panshilar::StringBuilder*>(x); }
+PNSLR_StringBuilder& PNSLR_Bindings_Convert(Panshilar::StringBuilder& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::StringBuilder& PNSLR_Bindings_Convert(PNSLR_StringBuilder& x) { return *PNSLR_Bindings_Convert(&x); }
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_StringBuilder, allocator) == PNSLR_STRUCT_OFFSET(Panshilar::StringBuilder, allocator), "allocator offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_StringBuilder, buffer) == PNSLR_STRUCT_OFFSET(Panshilar::StringBuilder, buffer), "buffer offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_StringBuilder, writtenSize) == PNSLR_STRUCT_OFFSET(Panshilar::StringBuilder, writtenSize), "writtenSize offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_StringBuilder, cursorPos) == PNSLR_STRUCT_OFFSET(Panshilar::StringBuilder, cursorPos), "cursorPos offset mismatch");
+
+extern "C" b8 PNSLR_AppendByteToStringBuilder(PNSLR_StringBuilder* builder, u8 byte);
+b8 Panshilar::AppendByteToStringBuilder(Panshilar::StringBuilder* builder, u8 byte)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendByteToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(byte)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendStringToStringBuilder(PNSLR_StringBuilder* builder, PNSLR_UTF8STR str);
+b8 Panshilar::AppendStringToStringBuilder(Panshilar::StringBuilder* builder, utf8str str)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendStringToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(str)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendCStringToStringBuilder(PNSLR_StringBuilder* builder, cstring str);
+b8 Panshilar::AppendCStringToStringBuilder(Panshilar::StringBuilder* builder, cstring str)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendCStringToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(str)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendRuneToStringBuilder(PNSLR_StringBuilder* builder, u32 rune);
+b8 Panshilar::AppendRuneToStringBuilder(Panshilar::StringBuilder* builder, u32 rune)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendRuneToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(rune)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendB8ToStringBuilder(PNSLR_StringBuilder* builder, b8 value);
+b8 Panshilar::AppendB8ToStringBuilder(Panshilar::StringBuilder* builder, b8 value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendB8ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendF32ToStringBuilder(PNSLR_StringBuilder* builder, f32 value, i32 decimalPlaces);
+b8 Panshilar::AppendF32ToStringBuilder(Panshilar::StringBuilder* builder, f32 value, i32 decimalPlaces)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendF32ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendF64ToStringBuilder(PNSLR_StringBuilder* builder, f64 value, i32 decimalPlaces);
+b8 Panshilar::AppendF64ToStringBuilder(Panshilar::StringBuilder* builder, f64 value, i32 decimalPlaces)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendF64ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+enum class PNSLR_IntegerBase : u8 { };
+static_assert(sizeof(PNSLR_IntegerBase) == sizeof(Panshilar::IntegerBase), "size mismatch");
+static_assert(alignof(PNSLR_IntegerBase) == alignof(Panshilar::IntegerBase), "align mismatch");
+PNSLR_IntegerBase* PNSLR_Bindings_Convert(Panshilar::IntegerBase* x) { return reinterpret_cast<PNSLR_IntegerBase*>(x); }
+Panshilar::IntegerBase* PNSLR_Bindings_Convert(PNSLR_IntegerBase* x) { return reinterpret_cast<Panshilar::IntegerBase*>(x); }
+PNSLR_IntegerBase& PNSLR_Bindings_Convert(Panshilar::IntegerBase& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::IntegerBase& PNSLR_Bindings_Convert(PNSLR_IntegerBase& x) { return *PNSLR_Bindings_Convert(&x); }
+
+extern "C" b8 PNSLR_AppendU8ToStringBuilder(PNSLR_StringBuilder* builder, u8 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendU8ToStringBuilder(Panshilar::StringBuilder* builder, u8 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendU8ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendU16ToStringBuilder(PNSLR_StringBuilder* builder, u16 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendU16ToStringBuilder(Panshilar::StringBuilder* builder, u16 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendU16ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendU32ToStringBuilder(PNSLR_StringBuilder* builder, u32 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendU32ToStringBuilder(Panshilar::StringBuilder* builder, u32 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendU32ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendU64ToStringBuilder(PNSLR_StringBuilder* builder, u64 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendU64ToStringBuilder(Panshilar::StringBuilder* builder, u64 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendU64ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendI8ToStringBuilder(PNSLR_StringBuilder* builder, i8 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendI8ToStringBuilder(Panshilar::StringBuilder* builder, i8 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendI8ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendI16ToStringBuilder(PNSLR_StringBuilder* builder, i16 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendI16ToStringBuilder(Panshilar::StringBuilder* builder, i16 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendI16ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendI32ToStringBuilder(PNSLR_StringBuilder* builder, i32 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendI32ToStringBuilder(Panshilar::StringBuilder* builder, i32 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendI32ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_AppendI64ToStringBuilder(PNSLR_StringBuilder* builder, i64 value, PNSLR_IntegerBase base);
+b8 Panshilar::AppendI64ToStringBuilder(Panshilar::StringBuilder* builder, i64 value, Panshilar::IntegerBase base)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_AppendI64ToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromStringBuilder(PNSLR_StringBuilder* builder);
+utf8str Panshilar::StringFromStringBuilder(Panshilar::StringBuilder* builder)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromStringBuilder(PNSLR_Bindings_Convert(builder)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" void PNSLR_ResetStringBuilder(PNSLR_StringBuilder* builder);
+void Panshilar::ResetStringBuilder(Panshilar::StringBuilder* builder)
+{
+    PNSLR_ResetStringBuilder(PNSLR_Bindings_Convert(builder));
+}
+
+extern "C" void PNSLR_FreeStringBuilder(PNSLR_StringBuilder* builder);
+void Panshilar::FreeStringBuilder(Panshilar::StringBuilder* builder)
+{
+    PNSLR_FreeStringBuilder(PNSLR_Bindings_Convert(builder));
+}
+
+enum class PNSLR_PrimitiveFmtType : u8 { };
+static_assert(sizeof(PNSLR_PrimitiveFmtType) == sizeof(Panshilar::PrimitiveFmtType), "size mismatch");
+static_assert(alignof(PNSLR_PrimitiveFmtType) == alignof(Panshilar::PrimitiveFmtType), "align mismatch");
+PNSLR_PrimitiveFmtType* PNSLR_Bindings_Convert(Panshilar::PrimitiveFmtType* x) { return reinterpret_cast<PNSLR_PrimitiveFmtType*>(x); }
+Panshilar::PrimitiveFmtType* PNSLR_Bindings_Convert(PNSLR_PrimitiveFmtType* x) { return reinterpret_cast<Panshilar::PrimitiveFmtType*>(x); }
+PNSLR_PrimitiveFmtType& PNSLR_Bindings_Convert(Panshilar::PrimitiveFmtType& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::PrimitiveFmtType& PNSLR_Bindings_Convert(PNSLR_PrimitiveFmtType& x) { return *PNSLR_Bindings_Convert(&x); }
+
+struct PNSLR_PrimitiveFmtOptions
+{
+   PNSLR_PrimitiveFmtType type;
+   u64 valueBufferA;
+   u64 valueBufferB;
+};
+static_assert(sizeof(PNSLR_PrimitiveFmtOptions) == sizeof(Panshilar::PrimitiveFmtOptions), "size mismatch");
+static_assert(alignof(PNSLR_PrimitiveFmtOptions) == alignof(Panshilar::PrimitiveFmtOptions), "align mismatch");
+PNSLR_PrimitiveFmtOptions* PNSLR_Bindings_Convert(Panshilar::PrimitiveFmtOptions* x) { return reinterpret_cast<PNSLR_PrimitiveFmtOptions*>(x); }
+Panshilar::PrimitiveFmtOptions* PNSLR_Bindings_Convert(PNSLR_PrimitiveFmtOptions* x) { return reinterpret_cast<Panshilar::PrimitiveFmtOptions*>(x); }
+PNSLR_PrimitiveFmtOptions& PNSLR_Bindings_Convert(Panshilar::PrimitiveFmtOptions& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::PrimitiveFmtOptions& PNSLR_Bindings_Convert(PNSLR_PrimitiveFmtOptions& x) { return *PNSLR_Bindings_Convert(&x); }
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_PrimitiveFmtOptions, type) == PNSLR_STRUCT_OFFSET(Panshilar::PrimitiveFmtOptions, type), "type offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_PrimitiveFmtOptions, valueBufferA) == PNSLR_STRUCT_OFFSET(Panshilar::PrimitiveFmtOptions, valueBufferA), "valueBufferA offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_PrimitiveFmtOptions, valueBufferB) == PNSLR_STRUCT_OFFSET(Panshilar::PrimitiveFmtOptions, valueBufferB), "valueBufferB offset mismatch");
+
+typedef struct { PNSLR_PrimitiveFmtOptions* data; i64 count; } PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions;
+static_assert(sizeof(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions) == sizeof(ArraySlice<Panshilar::PrimitiveFmtOptions>), "size mismatch");
+static_assert(alignof(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions) == alignof(ArraySlice<Panshilar::PrimitiveFmtOptions>), "align mismatch");
+PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions* PNSLR_Bindings_Convert(ArraySlice<Panshilar::PrimitiveFmtOptions>* x) { return reinterpret_cast<PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions*>(x); }
+ArraySlice<Panshilar::PrimitiveFmtOptions>* PNSLR_Bindings_Convert(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions* x) { return reinterpret_cast<ArraySlice<Panshilar::PrimitiveFmtOptions>*>(x); }
+PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions& PNSLR_Bindings_Convert(ArraySlice<Panshilar::PrimitiveFmtOptions>& x) { return *PNSLR_Bindings_Convert(&x); }
+ArraySlice<Panshilar::PrimitiveFmtOptions>& PNSLR_Bindings_Convert(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions& x) { return *PNSLR_Bindings_Convert(&x); }
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions, count) == PNSLR_STRUCT_OFFSET(ArraySlice<Panshilar::PrimitiveFmtOptions>, count), "count offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions, data) == PNSLR_STRUCT_OFFSET(ArraySlice<Panshilar::PrimitiveFmtOptions>, data), "data offset mismatch");
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtB8(b8 value);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtB8(b8 value)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtB8(PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtF32(f32 value, i32 decimalPlaces);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtF32(f32 value, i32 decimalPlaces)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtF32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtF64(f64 value, i32 decimalPlaces);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtF64(f64 value, i32 decimalPlaces)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtF64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtU8(u8 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtU8(u8 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtU8(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtU16(u16 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtU16(u16 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtU16(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtU32(u32 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtU32(u32 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtU32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtU64(u64 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtU64(u64 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtU64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtI8(i8 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtI8(i8 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtI8(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtI16(i16 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtI16(i16 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtI16(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtI32(i32 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtI32(i32 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtI32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtI64(i64 value, PNSLR_IntegerBase base);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtI64(i64 value, Panshilar::IntegerBase base)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtI64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtRune(u32 value);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtRune(u32 value)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtRune(PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtCString(cstring value);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtCString(cstring value)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtCString(PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_PrimitiveFmtOptions PNSLR_FmtString(PNSLR_UTF8STR value);
+Panshilar::PrimitiveFmtOptions Panshilar::FmtString(utf8str value)
+{
+    PNSLR_PrimitiveFmtOptions zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FmtString(PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_FormatAndAppendToStringBuilder(PNSLR_StringBuilder* builder, PNSLR_UTF8STR fmtStr, PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions args);
+b8 Panshilar::FormatAndAppendToStringBuilder(Panshilar::StringBuilder* builder, utf8str fmtStr, ArraySlice<Panshilar::PrimitiveFmtOptions> args)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FormatAndAppendToStringBuilder(PNSLR_Bindings_Convert(builder), PNSLR_Bindings_Convert(fmtStr), PNSLR_Bindings_Convert(args)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromBoolean(b8 value, PNSLR_Allocator allocator);
+utf8str Panshilar::StringFromBoolean(b8 value, Panshilar::Allocator allocator)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromBoolean(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromF32(f32 value, PNSLR_Allocator allocator, i32 decimalPlaces);
+utf8str Panshilar::StringFromF32(f32 value, Panshilar::Allocator allocator, i32 decimalPlaces)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromF32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromF64(f64 value, PNSLR_Allocator allocator, i32 decimalPlaces);
+utf8str Panshilar::StringFromF64(f64 value, Panshilar::Allocator allocator, i32 decimalPlaces)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromF64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(decimalPlaces)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromU8(u8 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromU8(u8 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromU8(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromU16(u16 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromU16(u16 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromU16(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromU32(u32 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromU32(u32 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromU32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromU64(u64 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromU64(u64 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromU64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromI8(i8 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromI8(i8 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromI8(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromI16(i16 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromI16(i16 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromI16(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromI32(i32 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromI32(i32 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromI32(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_UTF8STR PNSLR_StringFromI64(i64 value, PNSLR_Allocator allocator, PNSLR_IntegerBase base);
+utf8str Panshilar::StringFromI64(i64 value, Panshilar::Allocator allocator, Panshilar::IntegerBase base)
+{
+    PNSLR_UTF8STR zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StringFromI64(PNSLR_Bindings_Convert(value), PNSLR_Bindings_Convert(allocator), PNSLR_Bindings_Convert(base)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_BooleanFromString(PNSLR_UTF8STR str, b8* value);
+b8 Panshilar::BooleanFromString(utf8str str, b8* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_BooleanFromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_F32FromString(PNSLR_UTF8STR str, f32* value);
+b8 Panshilar::F32FromString(utf8str str, f32* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_F32FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_F64FromString(PNSLR_UTF8STR str, f64* value);
+b8 Panshilar::F64FromString(utf8str str, f64* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_F64FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_U8FromString(PNSLR_UTF8STR str, u8* value);
+b8 Panshilar::U8FromString(utf8str str, u8* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_U8FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_U16FromString(PNSLR_UTF8STR str, u16* value);
+b8 Panshilar::U16FromString(utf8str str, u16* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_U16FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_U32FromString(PNSLR_UTF8STR str, u32* value);
+b8 Panshilar::U32FromString(utf8str str, u32* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_U32FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_U64FromString(PNSLR_UTF8STR str, u64* value);
+b8 Panshilar::U64FromString(utf8str str, u64* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_U64FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_I8FromString(PNSLR_UTF8STR str, i8* value);
+b8 Panshilar::I8FromString(utf8str str, i8* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_I8FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_I16FromString(PNSLR_UTF8STR str, i16* value);
+b8 Panshilar::I16FromString(utf8str str, i16* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_I16FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_I32FromString(PNSLR_UTF8STR str, i32* value);
+b8 Panshilar::I32FromString(utf8str str, i32* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_I32FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_I64FromString(PNSLR_UTF8STR str, i64* value);
+b8 Panshilar::I64FromString(utf8str str, i64* value)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_I64FromString(PNSLR_Bindings_Convert(str), PNSLR_Bindings_Convert(value)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
 struct PNSLR_Path
 {
    PNSLR_UTF8STR path;
@@ -2344,22 +3471,34 @@ i64 Panshilar::GetSizeOfFile(Panshilar::File handle)
     i64 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_GetSizeOfFile(PNSLR_Bindings_Convert(handle)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
+extern "C" i64 PNSLR_GetCurrentPositionInFile(PNSLR_File handle);
+i64 Panshilar::GetCurrentPositionInFile(Panshilar::File handle)
+{
+    i64 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_GetCurrentPositionInFile(PNSLR_Bindings_Convert(handle)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
 extern "C" b8 PNSLR_SeekPositionInFile(PNSLR_File handle, i64 newPos, b8 relative);
 b8 Panshilar::SeekPositionInFile(Panshilar::File handle, i64 newPos, b8 relative)
 {
     b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_SeekPositionInFile(PNSLR_Bindings_Convert(handle), PNSLR_Bindings_Convert(newPos), PNSLR_Bindings_Convert(relative)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
-extern "C" b8 PNSLR_ReadFromFile(PNSLR_File handle, PNSLR_ArraySlice_u8 dst);
-b8 Panshilar::ReadFromFile(Panshilar::File handle, ArraySlice<u8> dst)
+extern "C" b8 PNSLR_ReadFromFile(PNSLR_File handle, PNSLR_ArraySlice_u8 dst, i64* readSize);
+b8 Panshilar::ReadFromFile(Panshilar::File handle, ArraySlice<u8> dst, i64* readSize)
 {
-    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_ReadFromFile(PNSLR_Bindings_Convert(handle), PNSLR_Bindings_Convert(dst)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_ReadFromFile(PNSLR_Bindings_Convert(handle), PNSLR_Bindings_Convert(dst), PNSLR_Bindings_Convert(readSize)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
 extern "C" b8 PNSLR_WriteToFile(PNSLR_File handle, PNSLR_ArraySlice_u8 src);
 b8 Panshilar::WriteToFile(Panshilar::File handle, ArraySlice<u8> src)
 {
     b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_WriteToFile(PNSLR_Bindings_Convert(handle), PNSLR_Bindings_Convert(src)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_FormatAndWriteToFile(PNSLR_File handle, PNSLR_UTF8STR fmtStr, PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions args);
+b8 Panshilar::FormatAndWriteToFile(Panshilar::File handle, utf8str fmtStr, ArraySlice<Panshilar::PrimitiveFmtOptions> args)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FormatAndWriteToFile(PNSLR_Bindings_Convert(handle), PNSLR_Bindings_Convert(fmtStr), PNSLR_Bindings_Convert(args)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
 extern "C" b8 PNSLR_TruncateFile(PNSLR_File handle, i64 newSize);
@@ -2448,6 +3587,112 @@ extern "C" b8 PNSLR_GetInterfaceIPAddresses(PNSLR_ArraySlice_PNSLR_IPNetwork* ne
 b8 Panshilar::GetInterfaceIPAddresses(ArraySlice<Panshilar::IPNetwork>* networks, Panshilar::Allocator allocator)
 {
     b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_GetInterfaceIPAddresses(PNSLR_Bindings_Convert(networks), PNSLR_Bindings_Convert(allocator)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+enum class PNSLR_StreamMode : u8 { };
+static_assert(sizeof(PNSLR_StreamMode) == sizeof(Panshilar::StreamMode), "size mismatch");
+static_assert(alignof(PNSLR_StreamMode) == alignof(Panshilar::StreamMode), "align mismatch");
+PNSLR_StreamMode* PNSLR_Bindings_Convert(Panshilar::StreamMode* x) { return reinterpret_cast<PNSLR_StreamMode*>(x); }
+Panshilar::StreamMode* PNSLR_Bindings_Convert(PNSLR_StreamMode* x) { return reinterpret_cast<Panshilar::StreamMode*>(x); }
+PNSLR_StreamMode& PNSLR_Bindings_Convert(Panshilar::StreamMode& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::StreamMode& PNSLR_Bindings_Convert(PNSLR_StreamMode& x) { return *PNSLR_Bindings_Convert(&x); }
+
+extern "C" typedef b8 (*PNSLR_StreamProcedure)(rawptr streamData, PNSLR_StreamMode mode, PNSLR_ArraySlice_u8 data, i64 offset, i64* extraRet);
+static_assert(sizeof(PNSLR_StreamProcedure) == sizeof(Panshilar::StreamProcedure), "size mismatch");
+static_assert(alignof(PNSLR_StreamProcedure) == alignof(Panshilar::StreamProcedure), "align mismatch");
+PNSLR_StreamProcedure* PNSLR_Bindings_Convert(Panshilar::StreamProcedure* x) { return reinterpret_cast<PNSLR_StreamProcedure*>(x); }
+Panshilar::StreamProcedure* PNSLR_Bindings_Convert(PNSLR_StreamProcedure* x) { return reinterpret_cast<Panshilar::StreamProcedure*>(x); }
+PNSLR_StreamProcedure& PNSLR_Bindings_Convert(Panshilar::StreamProcedure& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::StreamProcedure& PNSLR_Bindings_Convert(PNSLR_StreamProcedure& x) { return *PNSLR_Bindings_Convert(&x); }
+
+struct PNSLR_Stream
+{
+   PNSLR_StreamProcedure procedure;
+   rawptr data;
+};
+static_assert(sizeof(PNSLR_Stream) == sizeof(Panshilar::Stream), "size mismatch");
+static_assert(alignof(PNSLR_Stream) == alignof(Panshilar::Stream), "align mismatch");
+PNSLR_Stream* PNSLR_Bindings_Convert(Panshilar::Stream* x) { return reinterpret_cast<PNSLR_Stream*>(x); }
+Panshilar::Stream* PNSLR_Bindings_Convert(PNSLR_Stream* x) { return reinterpret_cast<Panshilar::Stream*>(x); }
+PNSLR_Stream& PNSLR_Bindings_Convert(Panshilar::Stream& x) { return *PNSLR_Bindings_Convert(&x); }
+Panshilar::Stream& PNSLR_Bindings_Convert(PNSLR_Stream& x) { return *PNSLR_Bindings_Convert(&x); }
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_Stream, procedure) == PNSLR_STRUCT_OFFSET(Panshilar::Stream, procedure), "procedure offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_Stream, data) == PNSLR_STRUCT_OFFSET(Panshilar::Stream, data), "data offset mismatch");
+
+typedef struct { PNSLR_Stream* data; i64 count; } PNSLR_ArraySlice_PNSLR_Stream;
+static_assert(sizeof(PNSLR_ArraySlice_PNSLR_Stream) == sizeof(ArraySlice<Panshilar::Stream>), "size mismatch");
+static_assert(alignof(PNSLR_ArraySlice_PNSLR_Stream) == alignof(ArraySlice<Panshilar::Stream>), "align mismatch");
+PNSLR_ArraySlice_PNSLR_Stream* PNSLR_Bindings_Convert(ArraySlice<Panshilar::Stream>* x) { return reinterpret_cast<PNSLR_ArraySlice_PNSLR_Stream*>(x); }
+ArraySlice<Panshilar::Stream>* PNSLR_Bindings_Convert(PNSLR_ArraySlice_PNSLR_Stream* x) { return reinterpret_cast<ArraySlice<Panshilar::Stream>*>(x); }
+PNSLR_ArraySlice_PNSLR_Stream& PNSLR_Bindings_Convert(ArraySlice<Panshilar::Stream>& x) { return *PNSLR_Bindings_Convert(&x); }
+ArraySlice<Panshilar::Stream>& PNSLR_Bindings_Convert(PNSLR_ArraySlice_PNSLR_Stream& x) { return *PNSLR_Bindings_Convert(&x); }
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_ArraySlice_PNSLR_Stream, count) == PNSLR_STRUCT_OFFSET(ArraySlice<Panshilar::Stream>, count), "count offset mismatch");
+static_assert(PNSLR_STRUCT_OFFSET(PNSLR_ArraySlice_PNSLR_Stream, data) == PNSLR_STRUCT_OFFSET(ArraySlice<Panshilar::Stream>, data), "data offset mismatch");
+
+extern "C" i64 PNSLR_GetSizeOfStream(PNSLR_Stream stream);
+i64 Panshilar::GetSizeOfStream(Panshilar::Stream stream)
+{
+    i64 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_GetSizeOfStream(PNSLR_Bindings_Convert(stream)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" i64 PNSLR_GetCurrentPositionInStream(PNSLR_Stream stream);
+i64 Panshilar::GetCurrentPositionInStream(Panshilar::Stream stream)
+{
+    i64 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_GetCurrentPositionInStream(PNSLR_Bindings_Convert(stream)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_SeekPositionInStream(PNSLR_Stream stream, i64 newPos, b8 relative);
+b8 Panshilar::SeekPositionInStream(Panshilar::Stream stream, i64 newPos, b8 relative)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_SeekPositionInStream(PNSLR_Bindings_Convert(stream), PNSLR_Bindings_Convert(newPos), PNSLR_Bindings_Convert(relative)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_ReadFromStream(PNSLR_Stream stream, PNSLR_ArraySlice_u8 dst, i64* readSize);
+b8 Panshilar::ReadFromStream(Panshilar::Stream stream, ArraySlice<u8> dst, i64* readSize)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_ReadFromStream(PNSLR_Bindings_Convert(stream), PNSLR_Bindings_Convert(dst), PNSLR_Bindings_Convert(readSize)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_WriteToStream(PNSLR_Stream stream, PNSLR_ArraySlice_u8 src);
+b8 Panshilar::WriteToStream(Panshilar::Stream stream, ArraySlice<u8> src)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_WriteToStream(PNSLR_Bindings_Convert(stream), PNSLR_Bindings_Convert(src)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_FormatAndWriteToStream(PNSLR_Stream stream, PNSLR_UTF8STR fmtStr, PNSLR_ArraySlice_PNSLR_PrimitiveFmtOptions args);
+b8 Panshilar::FormatAndWriteToStream(Panshilar::Stream stream, utf8str fmtStr, ArraySlice<Panshilar::PrimitiveFmtOptions> args)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FormatAndWriteToStream(PNSLR_Bindings_Convert(stream), PNSLR_Bindings_Convert(fmtStr), PNSLR_Bindings_Convert(args)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_TruncateStream(PNSLR_Stream stream, i64 newSize);
+b8 Panshilar::TruncateStream(Panshilar::Stream stream, i64 newSize)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_TruncateStream(PNSLR_Bindings_Convert(stream), PNSLR_Bindings_Convert(newSize)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" b8 PNSLR_FlushStream(PNSLR_Stream stream);
+b8 Panshilar::FlushStream(Panshilar::Stream stream)
+{
+    b8 zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_FlushStream(PNSLR_Bindings_Convert(stream)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" void PNSLR_CloseStream(PNSLR_Stream stream);
+void Panshilar::CloseStream(Panshilar::Stream stream)
+{
+    PNSLR_CloseStream(PNSLR_Bindings_Convert(stream));
+}
+
+extern "C" PNSLR_Stream PNSLR_StreamFromFile(PNSLR_File file);
+Panshilar::Stream Panshilar::StreamFromFile(Panshilar::File file)
+{
+    PNSLR_Stream zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StreamFromFile(PNSLR_Bindings_Convert(file)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
+}
+
+extern "C" PNSLR_Stream PNSLR_StreamFromStringBuilder(PNSLR_StringBuilder* builder);
+Panshilar::Stream Panshilar::StreamFromStringBuilder(Panshilar::StringBuilder* builder)
+{
+    PNSLR_Stream zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW = PNSLR_StreamFromStringBuilder(PNSLR_Bindings_Convert(builder)); return PNSLR_Bindings_Convert(zzzz_RetValXYZABCDEFGHIJKLMNOPQRSTUVW);
 }
 
 #undef PNSLR_STRUCT_OFFSET
