@@ -3,7 +3,7 @@
 #define VZKR_IMPLEMENTATION
 #include "Vizkaar.h"
 
-i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
+i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 {
     // i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
 
@@ -16,6 +16,7 @@ i32 DVRPL_Main(PNSLR_ArraySlice(utf8str) args)
     }
 
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
+        .app = app,
         .posX = 10, .posY = 10,
         .title = PNSLR_StringLiteral("Test Window"),
         .sizeX = 800, .sizeY = 600,
