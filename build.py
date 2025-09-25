@@ -1,5 +1,7 @@
-import os
+import os, sys
 from Source.Dependencies.Panshilar import buildutils
+
+CMD_ARG_MAKE_ANDROID_PROJ = '-androidproj' in sys.argv
 
 FOLDER_STRUCTURE = buildutils.getFolderStructure(os.path.dirname(os.path.abspath(__file__)))
 MAIN_FILE_C   = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.c'
@@ -8,8 +10,17 @@ MAIN_FILE_CXX = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.cpp'
 if __name__ == '__main__':
     buildutils.setupVsCodeLspStuff()
 
+    if CMD_ARG_MAKE_ANDROID_PROJ:
+        buildutils.createAndroidProject(
+            appName = "Vizkaar",
+            pkgName = "com.herohiralal.vizkaar",
+            projDir = "ProjectFiles/Vizkaar_Android",
+            cMain   = 'Source/zzzz_Unity.c',
+            cxxMain = 'Source/zzzz_Unity.cpp',
+        )
+
     for plt in buildutils.PLATFORMS_TO_BUILD:
-        if plt.tgt != 'windows':
+        if CMD_ARG_MAKE_ANDROID_PROJ or plt.tgt != 'windows':
             continue
 
         cOut   = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-C',   plt)
