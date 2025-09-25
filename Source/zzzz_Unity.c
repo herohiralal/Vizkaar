@@ -61,9 +61,7 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             if (evt.ty == DVRPL_EvtTy_DropFile)
             {
                 utf8str file = DVRPL_GetDroppedFile(evt.droppedFileId);
-                cstring cool = PNSLR_CStringFromString(file, tempAllocator);
-                OutputDebugStringA(cool);
-                OutputDebugStringA("\n");
+                PNSLR_LogIf(PNSLR_StringLiteral("Dropped file: $"), PNSLR_FmtArgs(PNSLR_FmtString(file)), PNSLR_GET_LOC());
             }
         }
 
