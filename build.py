@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     if CMD_ARG_MAKE_ANDROID_PROJ:
         buildutils.createAndroidProject(
-            appName = "Vizkaar",
+            appName = 'Vizkaar',
             pkgName = "com.herohiralal.vizkaar",
             projDir = "ProjectFiles/Vizkaar_Android",
             cMain   = 'Source/zzzz_Unity.c',

@@ -63,6 +63,18 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
                 utf8str file = DVRPL_GetDroppedFile(evt.droppedFileId);
                 PNSLR_LogIf(PNSLR_StringLiteral("Dropped file: $"), PNSLR_FmtArgs(PNSLR_FmtString(file)), PNSLR_GET_LOC());
             }
+
+            switch (evt.ty)
+            {
+                case DVRPL_EvtTy_Unknown:    PNSLR_LogI(PNSLR_StringLiteral("EVT: Unknown"),    PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_Keyboard:   PNSLR_LogI(PNSLR_StringLiteral("EVT: Keyboard"),   PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_MouseWheel: PNSLR_LogI(PNSLR_StringLiteral("EVT: MouseWheel"), PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_Touch:      PNSLR_LogI(PNSLR_StringLiteral("EVT: Touch"),      PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_TextInput:  PNSLR_LogI(PNSLR_StringLiteral("EVT: TextInput"),  PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_DropFile:   PNSLR_LogI(PNSLR_StringLiteral("EVT: DropFile"),   PNSLR_GET_LOC()); break;
+                case DVRPL_EvtTy_Quit:       PNSLR_LogI(PNSLR_StringLiteral("EVT: Quit"),       PNSLR_GET_LOC()); break;
+                default:                     PNSLR_LogI(PNSLR_StringLiteral("EVT: ???"),        PNSLR_GET_LOC()); break;
+            }
         }
 
         PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
