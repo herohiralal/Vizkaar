@@ -86,5 +86,5 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 }
 
 // unity build
-#include "Dependencies/Dvaarpaal/Source/zzzz_Unity.c"
 #include "Dependencies/Panshilar/Source/zzzz_Unity.c"
+#include "Dependencies/Dvaarpaal/Source/zzzz_Unity.c"
