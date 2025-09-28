@@ -1,5 +1,5 @@
 import os, sys
-from Source.Dependencies.Panshilar import buildutils,genprojandroid
+from Source.Dependencies.Panshilar import buildutils, genprojandroid
 
 CMD_ARG_MAKE_ANDROID_PROJ = '-androidproj' in sys.argv
 
