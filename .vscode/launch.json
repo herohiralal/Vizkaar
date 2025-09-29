@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Test Runner",
+            "preLaunchTask": "Build",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Binaries/Vizkaar-Windows-X64",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "logging": {
+                "engineLogging": false,
+                "moduleLoad": false,
+                "exceptions": true,
+                "processExit": true,
+                "programOutput": true,
+                "threadExit": true
+            }
+        }
+    ]
+}
