@@ -15,6 +15,13 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         return -1;
     }
 
+    MZNT_Renderer* renderer = MZNT_CreateRenderer(
+    (MZNT_RendererConfiguration)
+    {
+        .type = MZNT_RendererType_Vulkan,
+        .allocator = PNSLR_GetAllocator_DefaultHeap(),
+    });
+
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
         .app = app,
         .posX = 10, .posY = 10,
@@ -82,9 +89,12 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     DVRPL_DestroyWindow(&wnd);
 
+    MZNT_DestroyRenderer(renderer);
+
     return 0;
 }
 
 // unity build
 #include "Dependencies/Panshilar/Source/zzzz_Unity.c"
 #include "Dependencies/Dvaarpaal/Source/zzzz_Unity.c"
+#include "Dependencies/Muzent/Source/zzzz_Unity.c"
