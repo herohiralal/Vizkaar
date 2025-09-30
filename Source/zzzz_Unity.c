@@ -49,8 +49,9 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         i64 iterator = 0; DVRPL_Event evt;
         while (DVRPL_IterateEvents(&iterator, &evt))
         {
-            b8 altF4  = (evt.ty == DVRPL_EvtTy_Keyboard && evt.keyCode == DVRPL_KeyCode_F4    && !!(evt.keyModifiers & DVRPL_KeyModifier_Alt));
-            b8 altRet = (evt.ty == DVRPL_EvtTy_Keyboard && evt.keyCode == DVRPL_KeyCode_Enter && !!(evt.keyModifiers & DVRPL_KeyModifier_Alt));
+            b8 altBttn = (evt.ty == DVRPL_EvtTy_Keyboard && evt.keyStatus == DVRPL_KeyStatus_Pressed && !!(evt.keyModifiers & DVRPL_KeyModifier_Alt));
+            b8 altF4   = (altBttn && evt.keyCode == DVRPL_KeyCode_F4);
+            b8 altRet  = (altBttn && evt.keyCode == DVRPL_KeyCode_Enter);
 
             // alt+f4 or quit event
             if (evt.ty == DVRPL_EvtTy_Quit || altF4)
