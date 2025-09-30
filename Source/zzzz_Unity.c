@@ -83,6 +83,18 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             }
         }
 
+        i32 resizeIterator = 0; DVRPL_WindowResizeData resizeData;
+        while (DVRPL_IterateResizeEvent(&resizeIterator, &resizeData))
+        {
+            if (resizeData.id.handle != wnd.window.handle)
+            {
+                PNSLR_LogEf(PNSLR_StringLiteral("Resize event for unknown window: $"), PNSLR_FmtArgs(PNSLR_FmtU64(resizeData.id.handle, PNSLR_IntegerBase_HexaDecimal)), PNSLR_GET_LOC());
+                continue;
+            }
+
+            MZNT_ResizeRendererSurface(wndSrf, resizeData.sizeX, resizeData.sizeY, tempAllocator);
+        }
+
         PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
     }
 
