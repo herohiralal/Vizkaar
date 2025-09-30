@@ -46,23 +46,18 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         // prevTime = newTime;
 
         DVRPL_GatherEvents(tempAllocator);
-        PNSLR_ArraySlice(DVRPL_Event) evts = DVRPL_GetEvents();
-        for (i64 i = 0; i < evts.count; i++)
+        i64 iterator = 0; DVRPL_Event evt;
+        while (DVRPL_IterateEvents(&iterator, &evt))
         {
-            DVRPL_Event evt = evts.data[i];
+            b8 altF4  = (evt.ty == DVRPL_EvtTy_Keyboard && evt.keyCode == DVRPL_KeyCode_F4    && !!(evt.keyModifiers & DVRPL_KeyModifier_Alt));
+            b8 altRet = (evt.ty == DVRPL_EvtTy_Keyboard && evt.keyCode == DVRPL_KeyCode_Enter && !!(evt.keyModifiers & DVRPL_KeyModifier_Alt));
 
             // alt+f4 or quit event
-            if (evt.ty == DVRPL_EvtTy_Quit ||
-                (evt.ty == DVRPL_EvtTy_Keyboard &&
-                    evt.keyCode == DVRPL_KeyCode_F4 &&
-                    !!(evt.keyModifiers & DVRPL_KeyModifier_Alt)))
+            if (evt.ty == DVRPL_EvtTy_Quit || altF4)
                 running = false;
 
-
             // alt+enter
-            if (evt.ty == DVRPL_EvtTy_Keyboard &&
-                evt.keyCode == DVRPL_KeyCode_Enter &&
-                !!(evt.keyModifiers & DVRPL_KeyModifier_Alt))
+            if (altRet)
             {
                 fullscreen = !fullscreen;
                 DVRPL_SetFullScreen(&wnd, fullscreen, nil, nil, nil, nil);
