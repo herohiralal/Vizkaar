@@ -34,6 +34,8 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
     });
 
+    MZNT_RendererSurface* wndSrf = MZNT_CreateRendererSurface(renderer, (MZNT_WindowHandle) {.handle = wnd.window.handle}, tempAllocator);
+
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
 
     b8 running = true, fullscreen = false;
@@ -87,6 +89,8 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
         PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
     }
+
+    MZNT_DestroyRendererSurface(wndSrf, tempAllocator);
 
     DVRPL_DestroyWindow(&wnd);
 
