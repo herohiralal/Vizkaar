@@ -20,7 +20,8 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
     {
         .type = MZNT_RendererType_Vulkan,
         .allocator = PNSLR_GetAllocator_DefaultHeap(),
-    });
+        .appName = PNSLR_StringLiteral("Vizkaar"),
+    }, tempAllocator);
 
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
         .app = app,
@@ -89,7 +90,7 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     DVRPL_DestroyWindow(&wnd);
 
-    MZNT_DestroyRenderer(renderer);
+    MZNT_DestroyRenderer(renderer, tempAllocator);
 
     return 0;
 }
