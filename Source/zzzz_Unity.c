@@ -34,7 +34,7 @@ i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
     });
 
-    MZNT_RendererSurface* wndSrf = MZNT_CreateRendererSurface(renderer, (MZNT_WindowHandle) {.handle = wnd.window.handle}, tempAllocator);
+    MZNT_RendererSurface* wndSrf = MZNT_CreateRendererSurfaceFromWindow(renderer, (MZNT_WindowHandle) {.handle = wnd.window.handle}, tempAllocator);
 
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
 
