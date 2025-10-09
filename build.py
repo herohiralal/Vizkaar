@@ -1,5 +1,6 @@
 import os, sys
 from Source.Dependencies.Panshilar import buildutils, genprojandroid
+from Source.Dependencies.Muzent import build as BuildMuzent
 
 CMD_ARG_MAKE_ANDROID_PROJ = '-androidproj' in sys.argv
 
@@ -19,6 +20,8 @@ if __name__ == '__main__':
             cxxMain = 'Source/zzzz_Unity.cpp',
         )
         exit(0)
+
+    BuildMuzent.recompileShaders()
 
     for plt in buildutils.PLATFORMS_TO_BUILD:
         if CMD_ARG_MAKE_ANDROID_PROJ or plt.tgt != 'windows':
