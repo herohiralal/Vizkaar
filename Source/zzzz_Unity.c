@@ -1,10 +1,11 @@
+#define DVRPL_EXECUTABLE_IMPL_ANY VzkrMain
 #define PNSLR_IMPLEMENTATION
 #define DVRPL_IMPLEMENTATION
 #define MZNT_IMPLEMENTATION
 #define VZKR_IMPLEMENTATION
 #include "Vizkaar.h"
 
-i32 DVRPL_Main(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
+i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 {
     // i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
 
