@@ -23,6 +23,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         .type = MZNT_RendererType_Vulkan,
         .allocator = PNSLR_GetAllocator_DefaultHeap(),
         .appName = PNSLR_StringLiteral("Vizkaar"),
+        .appHandle = {.handle = app.handle},
     }, tempAllocator);
 
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
