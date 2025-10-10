@@ -7,6 +7,20 @@
 
 i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 {
+    PNSLR_SetDefaultLogger(
+        PNSLR_GetDefaultLoggerWithOptions(
+            PNSLR_LoggerLevel_Info,
+            PNSLR_LogOption_None
+                | PNSLR_LogOption_IncludeLevel
+                | PNSLR_LogOption_IncludeColours
+            #if PNSLR_MOBILE
+                | PNSLR_LogOption_IncludeFile
+            #else
+                | PNSLR_LogOption_IncludeFn
+            #endif
+        )
+    );
+
     // i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
 
     PNSLR_AllocatorError err = PNSLR_AllocatorError_None;
