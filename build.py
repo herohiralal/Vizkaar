@@ -1,12 +1,14 @@
 import os, sys
-from Source.Dependencies.Panshilar import buildutils, genprojandroid
+from Source.Dependencies.Panshilar import buildutils, genprojandroid, genprojxcode
 from Source.Dependencies.Muzent import build as BuildMuzent
 
 CMD_ARG_MAKE_ANDROID_PROJ = '-androidproj' in sys.argv
+CMD_ARG_MAKE_XCODE_PROJ   = '-xcodeproj'   in sys.argv
 
 FOLDER_STRUCTURE = buildutils.getFolderStructure(os.path.dirname(os.path.abspath(__file__)))
-MAIN_FILE_C   = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.c'
-MAIN_FILE_CXX = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.cpp'
+MAIN_FILE_C    = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.c'
+MAIN_FILE_CXX  = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.cpp'
+MAIN_FILE_OBJC = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.m'
 
 if __name__ == '__main__':
     buildutils.setupVsCodeLspStuff()
@@ -21,14 +23,26 @@ if __name__ == '__main__':
         )
         exit(0)
 
+    if CMD_ARG_MAKE_XCODE_PROJ:
+        genprojxcode.run(
+            projName = 'Vizkaar',
+            pkgName  = 'com.herohiralal.vizkaar',
+            projDir  = 'ProjectFiles/Vizkaar_Xcode',
+            cMain    = 'Source/zzzz_Unity.c',
+            cxxMain  = 'Source/zzzz_Unity.cpp',
+            objcMain = 'Source/zzzz_Unity.m',
+        )
+        exit(0)
+
     BuildMuzent.recompileShaders()
 
     for plt in buildutils.PLATFORMS_TO_BUILD:
-        if CMD_ARG_MAKE_ANDROID_PROJ or plt.tgt != 'windows':
+        if plt.tgt != 'windows' and plt.tgt != 'osx':
             continue
 
-        cOut   = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-C',   plt)
-        cxxOut = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-Cxx', plt)
+        cOut    = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-C',   plt)
+        cxxOut  = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-Cxx', plt)
+        objcOut = FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-ObjC', plt)
 
         cBuildCmd = buildutils.getCompilationCommand(
             plt,
@@ -46,17 +60,27 @@ if __name__ == '__main__':
             True,
         )
 
+        objcBuildCmd = buildutils.getCompilationCommand(
+            plt,
+            True,
+            MAIN_FILE_OBJC,
+            FOLDER_STRUCTURE.tmpDir + buildutils.getObjectOutputFileName('Vzkr-ObjC', plt),
+            False,
+        )
+
         linkCmd = buildutils.getExecBuildCommand(
             plt,
             True,
-            [cOut, cxxOut],
+            [cOut, cxxOut] + ([objcOut] if plt.tgt == 'osx' else []),
             [],
             FOLDER_STRUCTURE.binDir + buildutils.getExecOutputFileName('Vizkaar', plt),
-            True
+            True,
+            ['os', 'Cocoa', 'Metal', 'QuartzCore', 'Foundation'] if plt.tgt == 'osx' else []
         )
 
         success = buildutils.runCommand(cBuildCmd,   f'Vizkaar {plt.prettyTgt}-{plt.prettyArch} C Compile') and \
                   buildutils.runCommand(cxxBuildCmd, f'Vizkaar {plt.prettyTgt}-{plt.prettyArch} C++ Compile') and \
+                  (plt.tgt != 'osx' or buildutils.runCommand(objcBuildCmd, f'Vizkaar {plt.prettyTgt}-{plt.prettyArch} ObjC Compile')) and \
                   buildutils.runCommand(linkCmd,     f'Vizkaar {plt.prettyTgt}-{plt.prettyArch} Link')
 
     buildutils.printSummary()
