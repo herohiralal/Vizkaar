@@ -75,7 +75,7 @@ if __name__ == '__main__':
             [],
             FOLDER_STRUCTURE.binDir + buildutils.getExecOutputFileName('Vizkaar', plt),
             True,
-            ['os', 'Cocoa', 'Metal', 'QuartzCore', 'Foundation'] if plt.tgt == 'osx' else []
+            ['Cocoa', 'Metal', 'QuartzCore', 'Foundation'] if plt.tgt == 'osx' else []
         )
 
         success = buildutils.runCommand(cBuildCmd,   f'Vizkaar {plt.prettyTgt}-{plt.prettyArch} C Compile') and \
