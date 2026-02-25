@@ -34,7 +34,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
     MZNT_Renderer* renderer = MZNT_CreateRenderer(
     (MZNT_RendererConfiguration)
     {
-        .type = MZNT_RendererType_Vulkan,
+        .type = MZNT_RendererType_DirectX12,
         .allocator = PNSLR_GetAllocator_DefaultHeap(),
         .appName = PNSLR_StringLiteral("Vizkaar"),
         .appHandle = {.handle = app.handle},
