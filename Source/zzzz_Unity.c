@@ -42,7 +42,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     DVRPL_WindowData wnd = DVRPL_CreateWindow((DVRPL_WindowCreationOptions){
         .app = app,
-        .posX = 10, .posY = 10,
+        .posX = 200, .posY = 150,
         .title = PNSLR_StringLiteral("Test Window"),
         .sizeX = 800, .sizeY = 600,
         .parent = {0},
