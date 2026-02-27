@@ -4,6 +4,7 @@ from Source.Dependencies.Muzent import build as BuildMuzent
 
 CMD_ARG_MAKE_ANDROID_PROJ = '-androidproj' in sys.argv
 CMD_ARG_MAKE_XCODE_PROJ   = '-xcodeproj'   in sys.argv
+CMD_ARG_BUILD_SHADERS     = '-shaders'     in sys.argv
 
 FOLDER_STRUCTURE = buildutils.getFolderStructure(os.path.dirname(os.path.abspath(__file__)))
 MAIN_FILE_C    = FOLDER_STRUCTURE.srcDir + 'zzzz_Unity.c'
@@ -34,7 +35,10 @@ if __name__ == '__main__':
         )
         exit(0)
 
-    BuildMuzent.recompileShaders()
+    if CMD_ARG_BUILD_SHADERS:
+        BuildMuzent.recompileShaders()
+        buildutils.printSummary()
+        exit(0 if len(buildutils.failedProcesses) == 0 else 1)
 
     for plt in buildutils.PLATFORMS_TO_BUILD:
         if plt.tgt != 'windows' and plt.tgt != 'osx':
