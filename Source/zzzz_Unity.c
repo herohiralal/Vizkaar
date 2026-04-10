@@ -33,8 +33,6 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         )
     );
 
-    // i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
-
     PNSLR_AllocatorError err = PNSLR_AllocatorError_None;
     PNSLR_Allocator tempAllocator = PNSLR_NewAllocator_Arena(PNSLR_GetAllocator_DefaultHeap(), 16 * 1024 * 1024 /* 16 MiB */, PNSLR_GET_LOC(), &err);
     if (err != PNSLR_AllocatorError_None)
@@ -43,57 +41,60 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         return -1;
     }
 
-    MZNT_Renderer* rendererDx12 = MZNT_CreateRenderer((MZNT_RendererConfiguration)
+    MZNT_RendererType rendererTypes[] =
     {
-        .type = MZNT_RendererType_DirectX12,
-        .allocator = PNSLR_GetAllocator_DefaultHeap(),
-        .appName = PNSLR_StringLiteral("Vizkaar"),
-        .appHandle = {.handle = app.handle},
-    }, tempAllocator);
+#if MZNT_DX12
+        MZNT_RendererType_DirectX12,
+#endif
+#if MZNT_VULKAN
+        MZNT_RendererType_Vulkan,
+#endif
+    };
 
-    MZNT_Renderer* rendererVk = MZNT_CreateRenderer((MZNT_RendererConfiguration)
+    #define RENDERER_TYPE_COUNT (sizeof(rendererTypes) / sizeof(MZNT_RendererType))
+
+    i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
+
+    struct {
+        MZNT_Renderer*        renderer;
+        DVRPL_WindowData      window;
+        MZNT_RendererSurface* surface;
+    } openWindows[RENDERER_TYPE_COUNT] = {0};
+
+    for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
     {
-        .type = MZNT_RendererType_Vulkan,
-        .allocator = PNSLR_GetAllocator_DefaultHeap(),
-        .appName = PNSLR_StringLiteral("Vizkaar"),
-        .appHandle = {.handle = app.handle},
-    }, tempAllocator);
+        openWindows[i].renderer = MZNT_CreateRenderer((MZNT_RendererConfiguration)
+        {
+            .type = rendererTypes[i],
+            .allocator = PNSLR_GetAllocator_DefaultHeap(),
+            .appName = PNSLR_StringLiteral("Vizkaar"),
+            .appHandle = {.handle = app.handle},
+        }, tempAllocator);
 
-    DVRPL_WindowData wndDx12 = DVRPL_CreateWindow((DVRPL_WindowCreationOptions)
-    {
-        .app = app,
-        .posX = 200, .posY = 150,
-        .title = PNSLR_StringLiteral("Test Window Dx12"),
-        .sizeX = 800, .sizeY = 600,
-        .parent = {0},
-        .msaa = false,
-        .acceptDropFiles = true,
-        .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
-    });
+        openWindows[i].window = DVRPL_CreateWindow((DVRPL_WindowCreationOptions)
+        {
+            .app = app,
+            .posX = 200 + ((800 + 10) * i), .posY = 150,
+            .title = PNSLR_StringLiteral("Test Window"),
+            .sizeX = 800, .sizeY = 600,
+            .parent = {0},
+            .msaa = false,
+            .acceptDropFiles = true,
+            .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
+        });
 
-    DVRPL_WindowData wndVk = DVRPL_CreateWindow((DVRPL_WindowCreationOptions)
-    {
-        .app = app,
-        .posX = 200 + 800 + 10, .posY = 150,
-        .title = PNSLR_StringLiteral("Test Window Vk"),
-        .sizeX = 800, .sizeY = 600,
-        .parent = {0},
-        .msaa = false,
-        .acceptDropFiles = true,
-        .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
-    });
-
-    MZNT_RendererSurface* wndSrfDx12 = MZNT_CreateRendererSurfaceFromWindow(rendererDx12, (MZNT_WindowHandle) {.handle = wndDx12.window.handle}, tempAllocator);
-    MZNT_RendererSurface* wndSrfVk   = MZNT_CreateRendererSurfaceFromWindow(rendererVk,   (MZNT_WindowHandle) {.handle =   wndVk.window.handle}, tempAllocator);
+        openWindows[i].surface = MZNT_CreateRendererSurfaceFromWindow(openWindows[i].renderer,
+            (MZNT_WindowHandle) {.handle = openWindows[i].window.window.handle}, tempAllocator);
+    }
 
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
 
     b8 running = true, fullscreen = false;
     while (running)
     {
-        // i64 newTime = PNSLR_NanosecondsSinceUnixEpoch();
-        // f32 dt = (f32) ((f64) (newTime - prevTime) / 1000000000.0);
-        // prevTime = newTime;
+        i64 newTime = PNSLR_NanosecondsSinceUnixEpoch();
+        f32 dt = (f32) ((f64) (newTime - prevTime) / 1000000000.0);
+        prevTime = newTime;
 
         DVRPL_GatherEvents(tempAllocator);
         i64 iterator = 0; DVRPL_Event evt;
@@ -111,9 +112,13 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             if (altRet)
             {
                 fullscreen = !fullscreen;
-                DVRPL_WindowData* wnd = (evt.windowId.handle == wndVk.window.handle) ? (&wndVk) : (evt.windowId.handle == wndDx12.window.handle) ? (&wndDx12) : nil;
-                if (wnd)
-                    DVRPL_SetFullScreen(wnd, fullscreen, nil, nil, nil, nil);
+                for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+                {
+                    if (openWindows[i].window.window.handle != evt.windowId.handle)
+                        continue;
+
+                    DVRPL_SetFullScreen(&(openWindows[i].window), fullscreen, nil, nil, nil, nil);
+                }
             }
 
             if (evt.ty == DVRPL_EvtTy_DropFile)
@@ -140,28 +145,68 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             i32 resizeIterator = 0; DVRPL_WindowResizeData resizeData;
             while (DVRPL_IterateResizeEvent(&resizeIterator, &resizeData))
             {
-                MZNT_RendererSurface* wndSrf = (resizeData.id.handle == wndVk.window.handle) ? wndSrfVk : (resizeData.id.handle == wndDx12.window.handle) ? wndSrfDx12 : nil;
-                MZNT_ResizeRendererSurface(wndSrf, resizeData.sizeX, resizeData.sizeY, tempAllocator);
+                for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+                {
+                    if (openWindows[i].window.window.handle != resizeData.id.handle)
+                        continue;
+
+                    MZNT_ResizeRendererSurface(openWindows[i].surface, resizeData.sizeX, resizeData.sizeY, tempAllocator);
+                }
             }
 
-            /*MZNT_RendererCommandBuffer* cmdBuf = */ MZNT_BeginFrame(wndSrfVk, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
-            MZNT_EndFrame(wndSrfVk, tempAllocator);
+            for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+            {
+                MZNT_RendererSurface* srf = openWindows[i].surface;
+                /*MZNT_RendererCommandBuffer* cmdBuf = */ MZNT_BeginFrame(srf, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
+                MZNT_EndFrame(srf, tempAllocator);
+            }
 
-            /*MZNT_RendererCommandBuffer* cmdBuf = */ MZNT_BeginFrame(wndSrfDx12, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
-            MZNT_EndFrame(wndSrfDx12, tempAllocator);
+            for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+            {
+                utf8str rendererStr = {0};
+                switch (rendererTypes[i])
+                {
+                    case MZNT_RendererType_Null:
+                        rendererStr = PNSLR_StringLiteral("NULL");
+                        break;
+                    case MZNT_RendererType_Vulkan:
+                        rendererStr = PNSLR_StringLiteral("VLKN");
+                        break;
+                    case MZNT_RendererType_DirectX12:
+                        rendererStr = PNSLR_StringLiteral("DX12");
+                        break;
+                    case MZNT_RendererType_Metal:
+                        rendererStr = PNSLR_StringLiteral("MTL_");
+                        break;
+                    default:
+                        rendererStr = PNSLR_StringLiteral("UNKW");
+                        break;
+                }
+
+                utf8str tempStr = PNSLR_FormatString(
+                    PNSLR_StringLiteral("Vizkaar [REN_$] | cpu: $ms"),
+                    PNSLR_FmtArgs(
+                        PNSLR_FmtString(rendererStr),
+                        PNSLR_FmtF32(dt * 1000, 2)
+                    ),
+                    tempAllocator
+                );
+
+                DVRPL_RenameWindow(openWindows[i].window.window, tempStr);
+            }
         }
 
         PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
     }
 
-    MZNT_DestroyRendererSurface(wndSrfVk, tempAllocator);
-    MZNT_DestroyRendererSurface(wndSrfDx12, tempAllocator);
+    for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+    {
+        MZNT_DestroyRendererSurface(openWindows[i].surface, tempAllocator);
+        DVRPL_DestroyWindow(&(openWindows[i].window));
+        MZNT_DestroyRenderer(openWindows[i].renderer, tempAllocator);
+    }
 
-    DVRPL_DestroyWindow(&wndVk);
-    DVRPL_DestroyWindow(&wndDx12);
-
-    MZNT_DestroyRenderer(rendererVk, tempAllocator);
-    MZNT_DestroyRenderer(rendererDx12, tempAllocator);
+    #undef RENDERER_TYPE_COUNT
 
     return 0;
 }
