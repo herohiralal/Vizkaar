@@ -157,7 +157,9 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
             {
                 MZNT_RendererSurface* srf = openWindows[i].surface;
-                /*MZNT_RendererCommandBuffer* cmdBuf = */ MZNT_BeginFrame(srf, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
+                MZNT_RendererCommandBuffer* cmdBuf = MZNT_BeginFrame(srf, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
+                if (!cmdBuf) continue;
+
                 MZNT_EndFrame(srf, tempAllocator);
             }
 
