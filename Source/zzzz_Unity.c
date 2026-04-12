@@ -17,8 +17,39 @@
     #endif
 #endif
 
+const MZNT_RendererType k_RendererTypes[] =
+{
+#if MZNT_DX12
+    MZNT_RendererType_DirectX12,
+#endif
+#if MZNT_VULKAN
+    MZNT_RendererType_Vulkan,
+#endif
+};
+
+#define RENDERER_TYPE_COUNT (sizeof(k_RendererTypes) / sizeof(MZNT_RendererType))
+
+typedef struct VzkrRenderData
+{
+    b8 die;
+    b8 valid[RENDERER_TYPE_COUNT];
+    MZNT_SwapChain* swapChains[RENDERER_TYPE_COUNT];
+} VzkrRenderData;
+
+volatile VzkrRenderData G_RenderData;
+
+PNSLR_Event    G_RenderThreadWake;
+PNSLR_Event    G_RenderThreadDone;
+
+void VzkrRender(rawptr data);
+
 i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 {
+    PNSLR_SetThreadName(PNSLR_GetCurrentThreadHandle(), PNSLR_StringLiteral("Main Thread"));
+    G_RenderThreadWake = PNSLR_CreateEvent(false);
+    G_RenderThreadDone = PNSLR_CreateEvent(false);
+    PNSLR_ThreadHandle renderThreadHandle = PNSLR_StartThread(VzkrRender, nil, PNSLR_StringLiteral("Render Thread"));
+
     PNSLR_SetDefaultLogger(
         PNSLR_GetDefaultLoggerWithOptions(
             PNSLR_LoggerLevel_Info,
@@ -41,18 +72,6 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         return -1;
     }
 
-    MZNT_RendererType rendererTypes[] =
-    {
-#if MZNT_DX12
-        MZNT_RendererType_DirectX12,
-#endif
-#if MZNT_VULKAN
-        MZNT_RendererType_Vulkan,
-#endif
-    };
-
-    #define RENDERER_TYPE_COUNT (sizeof(rendererTypes) / sizeof(MZNT_RendererType))
-
     i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
 
     struct {
@@ -65,7 +84,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
     {
         openWindows[i].renderer = MZNT_CreateRenderer((MZNT_RendererConfiguration)
         {
-            .type = rendererTypes[i],
+            .type = k_RendererTypes[i],
             .allocator = PNSLR_GetAllocator_DefaultHeap(),
             .appName = PNSLR_StringLiteral("Vizkaar"),
             .appHandle = {.handle = app.handle},
@@ -87,6 +106,8 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             (MZNT_WindowHandle) {.handle = openWindows[i].window.window.handle},
             (MZNT_SwapChainConfiguration) {.vSync = false, .framesInFlight = 2},
             tempAllocator);
+
+        G_RenderData.swapChains[i] = openWindows[i].swapChain;
     }
 
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
@@ -142,7 +163,12 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             }
         }
 
-        if (running)
+        PNSLR_WaitEvent(&G_RenderThreadDone);
+        if (!running)
+        {
+            G_RenderData.die = true;
+        }
+        else
         {
             i32 resizeIterator = 0; DVRPL_WindowResizeData resizeData;
             while (DVRPL_IterateResizeEvent(&resizeIterator, &resizeData))
@@ -158,50 +184,50 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
             for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
             {
-                MZNT_SwapChain* sc = openWindows[i].swapChain;
-                MZNT_RendererCommandBuffer* cmdBuf = MZNT_IterateSwapChain(sc, nil, tempAllocator);
-                if (!cmdBuf) continue;
-
-                MZNT_PresentSwapChain(sc, tempAllocator);
+                G_RenderData.valid[i] = MZNT_IterateSwapChain(openWindows[i].swapChain, tempAllocator);
             }
+        }
+        PNSLR_SignalEvent(&G_RenderThreadWake);
 
-            for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+        for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+        {
+            utf8str rendererStr = {0};
+            switch (k_RendererTypes[i])
             {
-                utf8str rendererStr = {0};
-                switch (rendererTypes[i])
-                {
-                    case MZNT_RendererType_Null:
-                        rendererStr = PNSLR_StringLiteral("NULL");
-                        break;
-                    case MZNT_RendererType_Vulkan:
-                        rendererStr = PNSLR_StringLiteral("VLKN");
-                        break;
-                    case MZNT_RendererType_DirectX12:
-                        rendererStr = PNSLR_StringLiteral("DX12");
-                        break;
-                    case MZNT_RendererType_Metal:
-                        rendererStr = PNSLR_StringLiteral("MTL_");
-                        break;
-                    default:
-                        rendererStr = PNSLR_StringLiteral("UNKW");
-                        break;
-                }
-
-                utf8str tempStr = PNSLR_FormatString(
-                    PNSLR_StringLiteral("Vizkaar [REN_$] | cpu: $ms"),
-                    PNSLR_FmtArgs(
-                        PNSLR_FmtString(rendererStr),
-                        PNSLR_FmtF32(dt * 1000, 2)
-                    ),
-                    tempAllocator
-                );
-
-                DVRPL_RenameWindow(openWindows[i].window.window, tempStr);
+                case MZNT_RendererType_Null:
+                    rendererStr = PNSLR_StringLiteral("NULL");
+                    break;
+                case MZNT_RendererType_Vulkan:
+                    rendererStr = PNSLR_StringLiteral("VLKN");
+                    break;
+                case MZNT_RendererType_DirectX12:
+                    rendererStr = PNSLR_StringLiteral("DX12");
+                    break;
+                case MZNT_RendererType_Metal:
+                    rendererStr = PNSLR_StringLiteral("MTL_");
+                    break;
+                default:
+                    rendererStr = PNSLR_StringLiteral("UNKW");
+                    break;
             }
+
+            utf8str tempStr = PNSLR_FormatString(
+                PNSLR_StringLiteral("Vizkaar [REN_$] | cpu: $ms"),
+                PNSLR_FmtArgs(
+                    PNSLR_FmtString(rendererStr),
+                    PNSLR_FmtF32(dt * 1000, 2)
+                ),
+                tempAllocator
+            );
+
+            DVRPL_RenameWindow(openWindows[i].window.window, tempStr);
         }
 
         PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
     }
+
+    PNSLR_WaitEvent(&G_RenderThreadDone);
+    PNSLR_JoinThread(renderThreadHandle);
 
     for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
     {
@@ -210,10 +236,46 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         MZNT_DestroyRenderer(openWindows[i].renderer, tempAllocator);
     }
 
-    #undef RENDERER_TYPE_COUNT
+    PNSLR_DestroyAllocator_Arena(tempAllocator, PNSLR_GET_LOC(), nil);
+
+    PNSLR_DestroyEvent(&G_RenderThreadDone);
+    PNSLR_DestroyEvent(&G_RenderThreadWake);
 
     return 0;
 }
+
+void VzkrRender(rawptr data)
+{
+    PNSLR_Allocator tempAllocator = PNSLR_NewAllocator_Arena(PNSLR_GetAllocator_DefaultHeap(), 16 * 1024 * 1024 /* 16 MiB */, PNSLR_GET_LOC(), nil);
+    PNSLR_SignalEvent(&G_RenderThreadDone);
+
+    while (true)
+    {
+        PNSLR_WaitEvent(&G_RenderThreadWake);
+        if (G_RenderData.die)
+        {
+            PNSLR_DestroyAllocator_Arena(tempAllocator, PNSLR_GET_LOC(), nil);
+            PNSLR_SignalEvent(&G_RenderThreadDone);
+            return;
+        }
+
+        for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
+        {
+            MZNT_SwapChain* sc = G_RenderData.swapChains[i];
+            if (!sc) continue;
+
+            MZNT_RendererCommandBuffer* cmdBuf = MZNT_GetSwapChainCommandBuffer(sc, nil, tempAllocator);
+            if (!cmdBuf) continue;
+
+            MZNT_PresentSwapChain(sc, tempAllocator);
+        }
+
+        PNSLR_SignalEvent(&G_RenderThreadDone);
+        PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
+    }
+}
+
+#undef RENDERER_TYPE_COUNT
 
 // unity build
 #include "Dependencies/Panshilar/Source/zzzz_Unity.c"
