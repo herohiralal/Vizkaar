@@ -56,9 +56,9 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
     i64 prevTime = PNSLR_NanosecondsSinceUnixEpoch();
 
     struct {
-        MZNT_Renderer*        renderer;
-        DVRPL_WindowData      window;
-        MZNT_RendererSurface* surface;
+        MZNT_Renderer*   renderer;
+        DVRPL_WindowData window;
+        MZNT_SwapChain*  swapChain;
     } openWindows[RENDERER_TYPE_COUNT] = {0};
 
     for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
@@ -83,8 +83,10 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             .bgColR = 38, .bgColG = 38, .bgColB = 51, .bgColA = 255,
         });
 
-        openWindows[i].surface = MZNT_CreateRendererSurfaceFromWindow(openWindows[i].renderer,
-            (MZNT_WindowHandle) {.handle = openWindows[i].window.window.handle}, tempAllocator);
+        openWindows[i].swapChain = MZNT_CreateSwapChainFromWindow(openWindows[i].renderer,
+            (MZNT_WindowHandle) {.handle = openWindows[i].window.window.handle},
+            (MZNT_SwapChainConfiguration) {.vSync = false, .framesInFlight = 2},
+            tempAllocator);
     }
 
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
@@ -150,17 +152,17 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
                     if (openWindows[i].window.window.handle != resizeData.id.handle)
                         continue;
 
-                    MZNT_ResizeRendererSurface(openWindows[i].surface, resizeData.sizeX, resizeData.sizeY, tempAllocator);
+                    MZNT_ReconfigureSwapChain(openWindows[i].swapChain, (MZNT_SwapChainConfiguration) {.vSync = false, .framesInFlight = 2}, tempAllocator);
                 }
             }
 
             for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
             {
-                MZNT_RendererSurface* srf = openWindows[i].surface;
-                MZNT_RendererCommandBuffer* cmdBuf = MZNT_BeginFrame(srf, 0.15f, 0.15f, 0.3f, 1.0f, tempAllocator);
+                MZNT_SwapChain* sc = openWindows[i].swapChain;
+                MZNT_RendererCommandBuffer* cmdBuf = MZNT_IterateSwapChain(sc, nil, tempAllocator);
                 if (!cmdBuf) continue;
 
-                MZNT_EndFrame(srf, tempAllocator);
+                MZNT_PresentSwapChain(sc, tempAllocator);
             }
 
             for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
@@ -203,7 +205,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
     {
-        MZNT_DestroyRendererSurface(openWindows[i].surface, tempAllocator);
+        MZNT_DestroySwapChain(openWindows[i].swapChain, tempAllocator);
         DVRPL_DestroyWindow(&(openWindows[i].window));
         MZNT_DestroyRenderer(openWindows[i].renderer, tempAllocator);
     }
