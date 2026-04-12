@@ -261,6 +261,8 @@ void VzkrRender(rawptr data)
 
         for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
         {
+            if (!G_RenderData.valid[i]) continue;
+
             MZNT_SwapChain* sc = G_RenderData.swapChains[i];
             if (!sc) continue;
 
