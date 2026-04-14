@@ -104,7 +104,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
         openWindows[i].swapChain = MZNT_CreateSwapChainFromWindow(openWindows[i].renderer,
             (MZNT_WindowHandle) {.handle = openWindows[i].window.window.handle},
-            (MZNT_SwapChainConfiguration) {.vSync = false, .framesInFlight = 2},
+            (MZNT_SwapChainConfiguration) {.vSync = true, .framesInFlight = 2, .objectName = PNSLR_StringLiteral("MainWindow")},
             tempAllocator);
 
         G_RenderData.swapChains[i] = openWindows[i].swapChain;
@@ -178,7 +178,13 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
                     if (openWindows[i].window.window.handle != resizeData.id.handle)
                         continue;
 
-                    MZNT_ReconfigureSwapChain(openWindows[i].swapChain, (MZNT_SwapChainConfiguration) {.vSync = false, .framesInFlight = 2}, tempAllocator);
+                    MZNT_ReconfigureSwapChain(openWindows[i].swapChain, (MZNT_SwapChainConfiguration)
+                    {
+                        .vSync          = true,
+                        .framesInFlight = 2,
+                        .objectName     = PNSLR_StringLiteral("MainWindow"),
+                    },
+                     tempAllocator);
                 }
             }
 
