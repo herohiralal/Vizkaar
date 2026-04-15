@@ -82,7 +82,7 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     PNSLR_Path dxcDir = {0};
     PNSLR_SplitPath(PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator), &dxcDir, nil, nil, nil);
-    PNSLR_GetPathForSubdirectory(dxcDir, PNSLR_StringLiteral("DXC"), tempAllocator);
+    dxcDir = PNSLR_GetPathForSubdirectory(dxcDir, PNSLR_StringLiteral("DXC"), tempAllocator);
 
     for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
     {
