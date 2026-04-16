@@ -37,9 +37,8 @@ typedef struct VzkrRenderData
 } VzkrRenderData;
 
 volatile VzkrRenderData G_RenderData;
-
-PNSLR_Event    G_RenderThreadWake;
-PNSLR_Event    G_RenderThreadDone;
+PNSLR_Event G_RenderThreadWake;
+PNSLR_Event G_RenderThreadDone;
 
 void VzkrRender(rawptr data);
 
