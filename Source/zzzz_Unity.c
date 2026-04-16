@@ -80,9 +80,17 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         MZNT_SwapChain*  swapChain;
     } openWindows[RENDERER_TYPE_COUNT] = {0};
 
-    PNSLR_Path dxcDir = {0};
-    PNSLR_SplitPath(PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator), &dxcDir, nil, nil, nil);
-    dxcDir = PNSLR_GetPathForSubdirectory(dxcDir, PNSLR_StringLiteral("DXC"), tempAllocator);
+    MZNT_ShaderCompiler shaderCompiler = {0};
+    {
+        PNSLR_Path dxcDir = {0};
+        PNSLR_SplitPath(PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator), &dxcDir, nil, nil, nil);
+        dxcDir = PNSLR_GetPathForSubdirectory(dxcDir, PNSLR_StringLiteral("DXC"), tempAllocator);
+        shaderCompiler = MZNT_CreateShaderCompiler((MZNT_ShaderCompilerConfiguration)
+        {
+            .libSearchDir = dxcDir,
+            .allocator = PNSLR_GetAllocator_DefaultHeap(),
+        }, tempAllocator);
+    }
 
     for (i16 i = 0; i < (i16) RENDERER_TYPE_COUNT; i++)
     {
@@ -92,7 +100,6 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             .allocator = PNSLR_GetAllocator_DefaultHeap(),
             .appName = PNSLR_StringLiteral("Vizkaar"),
             .appHandle = {.handle = app.handle},
-            .shaderCompilerLibraryDir = dxcDir,
         }, tempAllocator);
 
         openWindows[i].window = DVRPL_CreateWindow((DVRPL_WindowCreationOptions)
@@ -246,6 +253,8 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
         DVRPL_DestroyWindow(&(openWindows[i].window));
         MZNT_DestroyRenderer(openWindows[i].renderer, tempAllocator);
     }
+
+    MZNT_DestroyShaderCompiler(shaderCompiler, tempAllocator);
 
     PNSLR_DestroyAllocator_Arena(tempAllocator, PNSLR_GET_LOC(), nil);
 
