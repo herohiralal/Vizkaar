@@ -81,9 +81,12 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
 
     MZNT_ShaderCompiler shaderCompiler = {0};
     {
-        PNSLR_Path dxcDir = {0};
-        PNSLR_SplitPath(PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator), &dxcDir, nil, nil, nil);
-        dxcDir = PNSLR_GetPathForSubdirectory(dxcDir, PNSLR_StringLiteral("DXC"), tempAllocator);
+        PNSLR_Path executableFile = PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator);
+
+        PNSLR_Path binariesDir = {0};
+        PNSLR_SplitPath(executableFile, &binariesDir, nil, nil, nil);
+        PNSLR_Path dxcDir = PNSLR_GetPathForSubdirectory(binariesDir, PNSLR_StringLiteral("DXC"), tempAllocator);
+
         shaderCompiler = MZNT_CreateShaderCompiler((MZNT_ShaderCompilerConfiguration)
         {
             .libSearchDir = dxcDir,
@@ -119,6 +122,16 @@ i32 VzkrMain(DVRPL_App app, PNSLR_ArraySlice(utf8str) args)
             tempAllocator);
 
         G_RenderData.swapChains[i] = openWindows[i].swapChain;
+
+        PNSLR_Path rootDir = {0};
+        {
+            PNSLR_Path executableFile = PNSLR_NormalisePath(args.data[0], PNSLR_PathNormalisationType_File, tempAllocator);
+            PNSLR_Path binariesDir = {0};
+            PNSLR_SplitPath(executableFile, &binariesDir, nil, nil, nil);
+            PNSLR_SplitPath(binariesDir, &rootDir, nil, nil, nil);
+        }
+
+        // PNSLR_Path shadersDir = PNSLR_GetPathForSubdirectory(rootDir, PNSLR_StringLiteral("Shaders"), tempAllocator);
     }
 
     PNSLR_FreeAll(tempAllocator, PNSLR_GET_LOC(), nil);
